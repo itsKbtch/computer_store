@@ -14,7 +14,7 @@ class AddNameToPromotionTable extends Migration
     public function up()
     {
         Schema::table('promotion', function (Blueprint $table) {
-            $table->string('name', 100)->after('id');
+            $table->string('name')->after('id');
         });
     }
 

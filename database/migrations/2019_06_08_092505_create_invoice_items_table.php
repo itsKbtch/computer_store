@@ -19,12 +19,10 @@ class CreateInvoiceItemsTable extends Migration
             $table->tinyInteger('quantity');
             $table->tinyInteger('discount_percent')->default(0)->nullable();
             $table->integer('discount_cash')->default(0)->nullable();
-            $table->unsignedTinyInteger('promo_applied');
 
             $table->primary(['invoice_id', 'product_id']);
             $table->foreign('invoice_id')->references('id')->on('invoice');
             $table->foreign('product_id')->references('id')->on('product');
-            $table->foreign('promo_applied')->references('id')->on('promotion');
         });
     }
 

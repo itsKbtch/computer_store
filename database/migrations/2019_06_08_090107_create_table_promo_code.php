@@ -15,10 +15,12 @@ class CreateTablePromoCode extends Migration
     {
         Schema::create('promo_code', function (Blueprint $table) {
             $table->tinyIncrements('id');
+            $table->string('active_code', 50)->unique();
             $table->tinyInteger('discount_percent')->default(0);
             $table->integer('discount_cash')->default(0);
             $table->dateTime('end_time');
-            $table->string('active_code', 50);
+            $table->smallInteger('quantity');
+            $table->boolean('active')->default(true);
             $table->timestamps();
         });
     }

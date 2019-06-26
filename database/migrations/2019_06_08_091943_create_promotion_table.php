@@ -15,9 +15,9 @@ class CreatePromotionTable extends Migration
     {
         Schema::create('promotion', function (Blueprint $table) {
             $table->tinyIncrements('id');
-            $table->text('promo_content');
+            $table->text('content');
             $table->dateTime('end_time');
-            $table->string('active_code', 50)->nullable();
+            $table->boolean('active')->default(true);
             $table->timestamps();
         });
     }

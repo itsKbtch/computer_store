@@ -168,7 +168,7 @@ class StockController extends Controller
             'warranty' => 'required|integer|max:127',
             'in_stock' => 'required|integer|max:127',
             'status' => 'required|integer',
-            'description' => 'nullable|string',
+            'description' => 'required|string',
             'photos' => 'nullable',
             'photos.*' => 'image|max:2048',
             'active' => 'nullable|boolean',
@@ -262,14 +262,14 @@ class StockController extends Controller
         $details = Details::where('product_id', $id);
 
         $details->delete();
-
-        foreach ($product->photos() as $photo) {
-            Storage::delete('public/product/'.$photo_name);
-            $product->photos()->detach($photo->id);
-        }
-
-        $check = $product->delete();
         
+        foreach ($product->photos as $photo) {
+            Storage::delete('public/product/'.$photo->name);
+        }
+        $product->photos()->delete();
+        
+        $check = $product->delete();
+
         if ($check) {
             return back()->with('success', 'Xóa thành công');
         }

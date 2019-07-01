@@ -204,6 +204,11 @@
     }
 
     function destroyMany() {
+        if ($('.multi-choice:checked').length == 0) {
+          alert('Chưa có danh mục nào được chọn');
+          return false;
+        }
+
         if(!confirm("Bạn có chắc chắn xóa?")) {
 					return false;
 				}
@@ -226,7 +231,7 @@
 					success: function(result) {
 						if(result.status == "success") {
 							alert("Xóa thành công");
-              window.location.href = "";
+              window.location.reload();
 						}
 						else {
               if (result.status == 'fail') {

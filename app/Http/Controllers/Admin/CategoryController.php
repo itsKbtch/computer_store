@@ -16,7 +16,6 @@ class CategoryController extends Controller
     public function index($tab = "", $parent_id = 0)
     {
         $categories = new Category;
-        $filters = [];
 
         if (isset($_GET['filters'])) {
             foreach ($_GET['filters'] as $filter) {
@@ -26,13 +25,11 @@ class CategoryController extends Controller
                 if ($filter == 'inactive') {
                     $categories = $categories->where('active', 0);
                 };
-                $filters['filters[]'] = $filter;
             }
         }
 
         if (isset($_GET['keyword'])) {
             $categories = $categories->where('name', 'like', '%'.$_GET['keyword'].'%');
-            $filters['keyword'] = $_GET['keyword'];
         }
         
         if (isset($_GET['sort'])) {
@@ -41,20 +38,19 @@ class CategoryController extends Controller
             } else {
                 $categories = $categories->orderBy('created_at', 'desc');
             };
-            $filters['sort'] = $_GET['sort'];
         } else {
             $categories = $categories->orderBy('created_at', 'desc');
         }
 
         switch ($tab) {
             case '':
-                $categories = $categories->paginate(5)->appends($filters);
+                $categories = $categories->paginate(5)->appends($_GET);
                 $response = ['categories' => $categories, 'tab' => $tab];
                 break;
 
             case 'main':
                 $categories = $categories->whereNull('parent_id');
-                $categories = $categories->paginate(5)->appends($filters);
+                $categories = $categories->paginate(5)->appends($_GET);
                 $response = ['categories' => $categories, 'tab' => $tab];
                 break;
 
@@ -65,12 +61,12 @@ class CategoryController extends Controller
                 } else {
                     $categories = $categories->whereNotNull('parent_id');
                 }
-                $categories = $categories->paginate(5)->appends($filters);
+                $categories = $categories->paginate(5)->appends($_GET);
                 $response = ['categories' => $categories, 'tab' => $tab, 'mainCategories' => $mainCategories, 'parent_id' => $parent_id];
                 break;
 
             default:
-                $categories = $categories->paginate(5)->appends($filters);
+                $categories = $categories->paginate(5)->appends($_GET);
                 $response = ['categories' => $categories, 'tab' => $tab];
                 break;
         }

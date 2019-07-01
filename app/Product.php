@@ -23,6 +23,6 @@ class Product extends Model
     }
     
     function promotion() {
-    	return $this->belongsToMany('App\Promotion', 'apply_promo');
+    	return $this->belongsToMany('App\Promotion', 'apply_promo', 'product_id', 'promo_id');
     }
 }

@@ -146,6 +146,7 @@
                           <button type="button" class="btn btn-secondary" id="addDetail">Thêm thông số kĩ thuật</button>
                         </div>
                       </div>
+
                       <strong class="text-muted d-block my-2">Danh mục</strong>
                       
                       <div class="row">
@@ -199,6 +200,39 @@
 
                         <div class="form-group col-12 mt-1">
                           <a class="font-weight-normal font-italic text-black-50" id="addCategory" href="{{route('admin.category.index')}}" onclick="return confirm('Bạn có chắc muốn chuyển sang trang quản lí không? Dữ liệu bạn đã điền sẽ bị mất.');">Quản lí danh mục</a>
+                        </div>
+                      </div>
+
+                      <strong class="text-muted d-block my-2">Promotions</strong>
+
+                      <div class="row">
+                        <div class="row col-12">
+                          @forelse ($promos as $promo)
+                            <div class="form-group col-12">
+                              <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="form-control custom-control-input" id="pr{{$promo->id}}" name="promos[]" value={{$promo->id}}{{in_array($promo->id, is_array(old('promos'))? old('promos'):[])? ' checked':''}}>
+                                <label class="custom-control-label" for="pr{{$promo->id}}">{{$promo->name}}</label>
+                              </div>
+                            </div>
+                          @empty
+                          Không có dữ liệu
+                          @endforelse
+                        </div>
+                        @error('promos')
+                          <div class="form-group col-12">
+                            <div class="custom-control-input is-invalid"></div>
+                            <div class="invalid-feedback">{{$message}}</div>
+                          </div>
+                        @enderror
+                        @error('promos.*')
+                          <div class="form-group col-12">
+                            <div class="custom-control-input is-invalid"></div>
+                            <div class="invalid-feedback">{{$message}}</div>
+                          </div>
+                        @enderror
+
+                        <div class="form-group col-12 mt-1">
+                          <a class="font-weight-normal font-italic text-black-50" id="addCategory" href="{{route('admin.promo.index')}}" onclick="return confirm('Bạn có chắc muốn chuyển sang trang quản lí không? Dữ liệu bạn đã điền sẽ bị mất.');">Quản lí khuyến mại</a>
                         </div>
                       </div>
                       <div class="row">

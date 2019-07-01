@@ -89,17 +89,15 @@
                   </div>
                   <strong class="text-muted d-block my-2">Thông tin chi tiết</strong>
                   <div class="row">
-                    
                     @if (!$product->details->isEmpty())
                       @foreach ($product->details as $key => $detail)
-                        <div class="detail col-12 row">
-                          <div class="form-group col-md-2">
-                            <input type="text" class="form-control" value="{{$detail['name']}}" readonly>
-                          </div>
-                          <div class="form-group col-md-9">
-                            <input type="text" class="form-control" value="{{$detail['value']}}"readonly>
-                          </div>
+                        <div class="form-group col-md-2">
+                          <input type="text" class="form-control" value="{{$detail['name']}}" readonly>
                         </div>
+                        <div class="form-group col-md-10">
+                          <input type="text" class="form-control" value="{{$detail['value']}}"readonly>
+                        </div>
+                        <div class="form-group col-12 d-md-none border-bottom"></div>
                       @endforeach
                     @endif
                   </div>
@@ -109,7 +107,7 @@
                     <div class="form-group col-12 mb-1">
                       <label>Danh mục chính:</label>
                     </div>
-                    <div class="col-6 mb-4">
+                    <div class="col-12 mb-4">
                         <ul class="list-group">
                         @foreach ($product->categories as $category)
                           @if (empty($category->parent_id))
@@ -122,7 +120,7 @@
                     <div class="form-group col-12 mb-1">
                         <label>Danh mục con:</label>
                     </div>
-                    <div class="col-6 mb-4">
+                    <div class="col-12 mb-4">
                         <ul class="list-group">
                             @foreach ($product->categories as $category)
                                 @if (!empty($category->parent_id))
@@ -132,11 +130,26 @@
                         </ul>
                     </div>
                   </div>
+
+                  <strong class="text-muted d-block my-2">Promotions</strong>
+
+                  <div class="row">
+                    <div class="col-12 mb-4">
+                        <ul class="list-group">
+                          @forelse ($product->promotion as $promo)
+                            <li class="list-group-item px-3 py-1">{{$promo->name}}</li>
+                          @empty
+                          Không có chương trình nào áp dụng
+                          @endforelse
+                        </ul>
+                    </div>
+                  </div>
+
                   <div class="row">
                     <div class="form-group col-12 text-center">
                         <div class="btn-group">
                             <a class="btn btn-warning btn-sm" href="{{route('admin.stock.edit', [$product->id])}}"><i class="fas fa-pencil-alt"></i></a>
-                            <button class="btn btn-danger btn-sm" type="button"><i class="fas fa-trash-alt"></i></button>
+                            <button class="btn btn-danger btn-sm" onclick="destroy('{{ route('admin.stock.delete', [$product->id]) }}')" title="Xóa"><i class="fas fa-trash-alt"></i></button>
                         </div>
                     </div>
                   </div>
@@ -146,37 +159,31 @@
             </div>
           </div>
           <script>
-            var details = 0;
-
-            function deleteDetail(detail) {
-              $(detail).parents('.detail').remove();
-            }
-
-            $(function() {
-              $('.mainCategory:checked').each(function() {
-                $('.subCategory[parent=' + $(this).val() + ']').prop('disabled', false);
-              });
-
-              $('#addDetail').on('click', function() {
-                $(this).parent().before('<div class="detail col-12 row"><div class="form-group col-md-2"><input type="text" class="form-control" name="newDetails[' + details + '][name]" placeholder="Tên thông số"></div><div class="form-group col-md-9"><input type="text" class="form-control" name="newDetails[' + details + '][value]" placeholder="Giá trị"></div><div class="form-group col-md-1 text-muted"><button type="button" class="btn btn-light" onclick="deleteDetail(this)"><i class="fas fa-times"></i></button></div></div>');
-                details++;
-              });
-
-              $('.mainCategory').on('change', function() {
-                $('.subCategory').prop('disabled', true);
-                $('.mainCategory:checked').each(function() {
-                  $('.subCategory[parent=' + $(this).val() + ']').prop('disabled', false);
-                });
-              });
-
-              $('#discount_type').on('change', function() {
-                if($('#discount_type').val() == 'percent') {
-                  $('#discount').attr('name', 'discount_percent');
-                } else {
-                  $('#discount').attr('name', 'discount_cash');
+            function destroy(url) {
+              if(!confirm("Bạn có chắc chắn xóa?")) {
+                return false;
+              }
+              
+              $.ajax({
+                url: url,
+                type: "DELETE",
+                data: {
+                  "_token" : '{{csrf_token()}}', 
+                  "_method" : "DELETE"
+                },
+                success: function(result) {
+                  if(result.status == "success") {
+                    alert("Xóa thành công");
+                    window.location.href = "{{ route('admin.stock.index') }}";
+                  }
+                  else {
+                    alert("Xóa thất bại");
+                  }
+                },
+                error: function(error) {
+                  console.log(error);
                 }
               });
-            });
-
+            }
           </script>
 @endsection

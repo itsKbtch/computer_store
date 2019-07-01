@@ -6,6 +6,7 @@ use App\Product;
 use App\Category;
 use App\Photos;
 use App\Details;
+use App\Promotion;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
@@ -19,23 +20,25 @@ class StockController extends Controller
      */
     public function index()
     {
-        $products = Product::with('categories');
+        $products = Product::with(['categories', 'promotion']);
 
         $categories = category::all();
         $mainCategories = $categories->where('parent_id', NULL);
         $subCategories = $categories->where('parent_id', '!=', NULL);
 
-        $filters = [];
-
         if (isset($_GET['category'])) {
-            $ids = [];
+            // $ids = [];
+            // foreach ($_GET['category'] as $category) {
+            //     foreach ($categories->find($category)->products as $product) {
+            //        array_push($ids, $product->id);
+            //     }
+            // }
+            // $products = $products->whereIn('id', $ids);
             foreach ($_GET['category'] as $category) {
-                foreach ($categories->find($category)->products as $product) {
-                   array_push($ids, $product->id);
-                }
-                $filters['category[]'] = $category;
+                $products = $products->whereHas('categories', function($query) use ($category) {
+                    $query->where('category_id', $category);
+                });
             }
-            $products = $products->whereIn('id', $ids);
         }
 
         if (isset($_GET['filters'])) {
@@ -49,11 +52,40 @@ class StockController extends Controller
                 if ($filter == 'discount') {
                     $products = $products->whereNotNull('discount_end_time');
                 };
-                $filters['filters[]'] = $filter;
+                if ($filter == 'promoted') {
+                    $products = $products->has('promotion');
+                };
             }
         }
 
-        $products = $products->get();
+        if (isset($_GET['status'])) {
+            foreach ($_GET['status'] as $status) {
+                $products = $products->where('status', $status);
+            }
+        }
+
+        if (isset($_GET['keyword'])) {
+            $products = $products->where('name', 'like', '%'.$_GET['keyword'].'%');
+        }
+
+        if (isset($_GET['sort'])) {
+            if ($_GET['sort'] == 'new') {
+                $products = $products->orderBy('created_at', 'desc');
+            };
+            if ($_GET['sort'] == 'old') {
+                $products = $products->orderBy('created_at', 'asc');
+            };
+            if ($_GET['sort'] == 'priceAsc') {
+                $products = $products->orderBy('price', 'asc');
+            };
+            if ($_GET['sort'] == 'priceDesc') {
+                $products = $products->orderBy('price', 'desc');
+            };
+        } else {
+            $products = $products->orderBy('created_at', 'desc');
+        }
+
+        $products = $products->paginate(12)->appends($_GET);
 
         return view('admin.stock.index', ['products' => $products, 'mainCategories' => $mainCategories, 'subCategories' => $subCategories]);
     }
@@ -66,8 +98,9 @@ class StockController extends Controller
     public function create()
     {
         $categories = Category::where('active', 1)->get();
+        $promos = Promotion::where('active', 1)->get();
 
-        return view('admin.stock.create', ['categories' => $categories]);
+        return view('admin.stock.create', ['categories' => $categories, 'promos' => $promos]);
     }
 
     /**
@@ -84,23 +117,31 @@ class StockController extends Controller
             'warranty' => 'required|integer|max:127',
             'in_stock' => 'required|integer|max:127',
             'status' => 'required|integer',
-            'description' => 'nullable|string',
+            'description' => 'required|string',
             'photos' => 'nullable',
             'photos.*' => 'image|max:2048',
             'active' => 'nullable|boolean',
-            'discount_percent' => 'nullable|integer|max:100',
-            'discount_cash' => 'nullable|integer',
+            'discount_percent' => 'sometimes|required_with:discount_end_time|nullable|integer|max:100',
+            'discount_cash' => 'sometimes|required_with:discount_end_time|nullable|integer',
             'discount_end_time' => 'required_with:discount_percent,discount_cash|nullable|date|after:today',
             'categories' => 'required',
             'categories.*' => 'integer',
             'details' => 'nullable',
             'details.*.name' => 'required_with:details|string|max:50',
             'details.*.value' => 'required_with:details|string|max:255',
+            'promos' => 'nullable|array',
+            'promos.*' => 'required_with:promos|integer'
         ]);
 
         $product = new Product;
 
-        $product->fill($request->except(['categories', 'details', 'photos']))->save();
+        $product->fill($request->except(['categories', 'details', 'photos', 'active']))->save();
+
+        if (!empty($request->active)) {
+            $product->active = 1;
+        } else {
+            $product->active = 0;
+        }
 
         if ($request->hasFile('photos')) {
             foreach ($request->photos as $photo) {
@@ -112,6 +153,10 @@ class StockController extends Controller
 
         $product->categories()->attach($request->categories);
 
+        if (!empty($request->promos)) {
+            $product->promotion()->attach($request->promos);
+        }
+
         if (!empty($request->details)) {
             foreach ($request->details as $detail) {
                 $product->details()->save(new Details($detail));
@@ -122,7 +167,7 @@ class StockController extends Controller
         if ($check) {
             return redirect('admin/stock')->with('success', 'Thêm mới thành công');
         }
-        return redirect('admin/stock/create')->with('fail', 'Thêm mới thất bại');
+        return back()->with('fail', 'Thêm mới thất bại');
     }
 
     /**
@@ -133,7 +178,9 @@ class StockController extends Controller
      */
     public function show(Product $product, $id)
     {
-        $product = $product->findOrFail($id);
+        $product = $product->with(['categories', 'promotion' => function($query) {
+            $query->where('active', 1);
+        }])->findOrFail($id);
 
         return view('admin.stock.details', ['product' => $product]);
     }
@@ -146,10 +193,11 @@ class StockController extends Controller
      */
     public function edit(Product $product, $id)
     {
-        $product = $product->findOrFail($id);
+        $product = $product->with(['categories', 'promotion'])->findOrFail($id);
         $categories = Category::where('active', 1)->get();
+        $promos = Promotion::where('active', 1)->get();
 
-        return view('admin.stock.edit', ['product' => $product, 'categories' => $categories]);
+        return view('admin.stock.edit', ['product' => $product, 'categories' => $categories, 'promos' => $promos]);
     }
 
     /**
@@ -172,8 +220,8 @@ class StockController extends Controller
             'photos' => 'nullable',
             'photos.*' => 'image|max:2048',
             'active' => 'nullable|boolean',
-            'discount_percent' => 'nullable|integer|max:100',
-            'discount_cash' => 'nullable|integer',
+            'discount_percent' => 'sometimes|required_with:discount_end_time|nullable|integer|max:100',
+            'discount_cash' => 'sometimes|required_with:discount_end_time|nullable|integer',
             'discount_end_time' => 'required_with:discount_percent,discount_cash|nullable|date|after:today',
             'categories' => 'required',
             'categories.*' => 'integer',
@@ -182,7 +230,9 @@ class StockController extends Controller
             'details.*.value' => 'required_with:details|string|max:255',
             'newDetails' => 'nullable',
             'newDetails.*.name' => 'required_with:details|string|max:50',
-            'newDetails.*.value' => 'required_with:details|string|max:255'
+            'newDetails.*.value' => 'required_with:details|string|max:255',
+            'promos' => 'nullable|array',
+            'promos.*' => 'required_with:promos|integer'
         ]);
 
         if (strtolower($product->name) != strtolower($request->name)) {
@@ -191,7 +241,13 @@ class StockController extends Controller
             ]);
         } 
 
-        $product->fill($request->except(['categories', 'details', 'newDetails', 'photos']));
+        $product->fill($request->except(['categories', 'details', 'newDetails', 'photos', 'active']));
+
+        if (!empty($request->active)) {
+            $product->active = 1;
+        } else {
+            $product->active = 0;
+        }
 
         if ($request->hasFile('photos')) {
             foreach ($request->photos as $photo) {
@@ -202,6 +258,12 @@ class StockController extends Controller
         }
 
         $product->categories()->sync($request->categories);
+
+        if (!empty($request->promos)) {
+            $product->promotion()->sync($request->promos);
+        } else {
+            $product->promotion()->detach();
+        }
 
         if (!empty($request->details)) {
             foreach ($request->details as $key => $detail) {
@@ -258,21 +320,56 @@ class StockController extends Controller
         $product = $product->find($id);
 
         $product->categories()->detach();
-        
-        $details = Details::where('product_id', $id);
 
-        $details->delete();
+        $product->promotion()->detach();
+
+        $product->details()->delete();
         
         foreach ($product->photos as $photo) {
             Storage::delete('public/product/'.$photo->name);
         }
         $product->photos()->delete();
-        
+
         $check = $product->delete();
 
         if ($check) {
-            return back()->with('success', 'Xóa thành công');
+            return response()->json([
+                'status' => 'success'
+            ]);
         }
-        return back()->with('fail', 'Xóa thất bại');
+        
+        return response()->json([
+            'status' => 'fail'
+        ]);
+    }
+
+    public function destroyMany(Product $products, Request $request)
+    {
+        $products = $products->whereIn('id', $request->id);
+
+        foreach ($products->get() as $product) {
+            $product->categories()->detach();
+
+            $product->promotion()->detach();
+
+            $product->details()->delete();
+            
+            foreach ($product->photos as $photo) {
+                Storage::delete('public/product/'.$photo->name);
+            }
+            $product->photos()->delete();
+        }
+
+        $check = $products->delete();
+
+        if ($check) {
+            return response()->json([
+                'status' => 'success'
+            ]);
+        }
+        
+        return response()->json([
+            'status' => 'fail'
+        ]);
     }
 }

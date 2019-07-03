@@ -116,9 +116,11 @@
 									<a></a>
 								</p>
 							</div>
-							<div class="add-kids single-add">
-								<a href="{{$slideshow[0]->link}}"><img src="{{asset('storage/slide/'.$slideshow[0]->photo)}}" alt="{{$slideshow[0]->caption}}" title="{{$slideshow[0]->link}}"></a>
-							</div>
+							@if (!$slideshow->isEmpty())
+								<div class="add-kids single-add">
+									<a href="{{$slideshow[0]->link}}"><img src="{{asset('storage/slide/'.$slideshow[0]->photo)}}" alt="{{$slideshow[0]->caption}}" title="{{$slideshow[0]->link}}"></a>
+								</div>
+							@endif
 						</div>
 					</div>
 					<div class="col-md-9 col-sm-8">

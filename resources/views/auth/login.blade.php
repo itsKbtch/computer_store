@@ -1,5 +1,14 @@
 @extends('layouts.app')
 
+@section('menu')
+    <li class="nav-item">
+        <a class="nav-link" style="color: #ffffff" href="{{ route('login') }}">{{ __('Đăng nhập') }}</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" style="color: #ffffff" href="{{ route('register') }}">{{ __('Đăng kí') }}</a>
+    </li>
+@endsection
+
 @section('content')
 
 <div class="container">

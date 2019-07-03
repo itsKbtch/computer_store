@@ -117,6 +117,11 @@
 										</ul>
 									</div>
 									@endif
+									<form action="{{ route('addCart') }}" method="POST" style="margin-top: 20px">
+										@csrf
+										<input type="hidden" name='id' value={{$product->id}}>
+										<button type="submit" class="btn btn-warning">Thêm vào giỏ hang</button>
+									</form>
 								</div>
 							</div>
 						</div>

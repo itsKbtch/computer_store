@@ -66,11 +66,11 @@
                         <!-- Authentication Links -->
                         @guest
                             <li class="nav-item">
-                                <a class="nav-link" style="color: #ffffff" href="{{ route('login') }}">{{ __('Login') }}</a>
+                                <a class="nav-link" style="color: #ffffff" href="{{ route('login') }}">{{ __('Đăng nhập') }}</a>
                             </li>
                             @if (Route::has('register'))
                                 <li class="nav-item">
-                                    <a class="nav-link" style="color: #ffffff" href="{{ route('register') }}">{{ __('Register') }}</a>
+                                    <a class="nav-link" style="color: #ffffff" href="{{ route('register') }}">{{ __('Đăng kí') }}</a>
                                 </li>
                             @endif
                         @else

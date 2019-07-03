@@ -10,11 +10,6 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::get('/', function () {
-    return view('welcome');
-});
-
 Route::prefix('admin')->name('admin.')->group(function() {
 	Route::get("home", "\App\Http\Controllers\Admin\HomeController@index")->name('home.index');
 
@@ -72,8 +67,40 @@ Route::prefix('admin')->name('admin.')->group(function() {
 		Route::delete("{id}/delete", "\App\Http\Controllers\Admin\CodeController@destroy")->name('delete');
 		Route::post("deleteMany", "\App\Http\Controllers\Admin\CodeController@destroyMany")->name('deleteMany');
 	});
+
+	Route::prefix('slideshow')->name('slideshow.')->group(function() {
+		Route::get("", "\App\Http\Controllers\Admin\SlideshowController@index")->name('index');
+		Route::get("{id}/edit", "\App\Http\Controllers\Admin\SlideshowController@edit")->name('edit');
+		Route::post("{id}/edit", "\App\Http\Controllers\Admin\SlideshowController@update")->name('update');
+		Route::get("create", "\App\Http\Controllers\Admin\SlideshowController@create")->name('create');
+		Route::post("create", "\App\Http\Controllers\Admin\SlideshowController@store")->name('store');
+		Route::delete("{id}/delete", "\App\Http\Controllers\Admin\SlideshowController@destroy")->name('delete');
+		Route::post("deleteMany", "\App\Http\Controllers\Admin\SlideshowController@destroyMany")->name('deleteMany');
+	});
+
+	Route::prefix('users')->name('users.')->group(function() {
+		Route::get("", "\App\Http\Controllers\Admin\UsersController@index")->name('index');
+		Route::get("{id}/details", "\App\Http\Controllers\Admin\UsersController@show")->name('details');
+	});
 });
+
 Auth::routes();
 
+Route::get('/login', "\App\Http\Controllers\Auth\LoginController@showLoginForm")->name('login');
+
+Route::get('/', "\App\Http\Controllers\HomeController@index")->name('home');
+
+Route::get('/details/{slug}', "\App\Http\Controllers\HomeController@details")->name('details');	
+
+Route::get('/search', "\App\Http\Controllers\HomeController@search")->name('search');	
+
+Route::get('/{category}/{sub_category?}', "\App\Http\Controllers\HomeController@category")->name('category');
 
 
+
+
+
+
+//Auth::routes();
+
+//Route::get('/home', 'HomeController@index')->name('home');

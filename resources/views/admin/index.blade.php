@@ -86,9 +86,15 @@
                 </li>
               </div>
               <li class="nav-item">
-                <a class="nav-link" href="member.html">
+                <a class="nav-link{{strpos(Route::currentRouteName(), 'admin.users') !== false? ' active':''}}" href="{{route('admin.users.index')}}">
                   <i class="material-icons">person</i>
-                  <span>Khách hàng - Thành viên</span>
+                  <span>Thành viên</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link{{strpos(Route::currentRouteName(), 'admin.slideshow') !== false? ' active':''}}" href="{{route('admin.slideshow.index')}}">
+                  <i class="material-icons">photo</i>
+                  <span>Slideshow</span>
                 </a>
               </li>
             </ul>

@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="{{asset('admin/styles/extras.1.1.0.min.css')}}">
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+
   </head>
   <body class="h-100">
     <div class="container-fluid">
@@ -112,15 +113,21 @@
                 <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle text-nowrap px-3" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                     <img class="user-avatar rounded-circle mr-2" src="{{asset('admin/images/avatars/0.jpg')}}" alt="User Avatar">
-                    <span class="d-none d-md-inline-block">Sierra Brooks</span>
+                    {{ Auth::user()->name }} <span class="caret"></span>
                   </a>
                   <div class="dropdown-menu dropdown-menu-small">
                     <a class="dropdown-item" href="user-profile-lite.html">
                       <i class="material-icons">&#xE7FD;</i> Profile
                     </a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item text-danger" href="#">
-                      <i class="material-icons text-danger">&#xE879;</i> Logout </a>
+                      <a class="dropdown-item" href="{{ route('logout') }} "
+                                       onclick="event.preventDefault();
+                                                     document.getElementById('logout-form').submit();">
+                                        {{ __('Logout') }}
+                       </a>
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                        @csrf
+                        </form>
                   </div>
                 </li>
               </ul>

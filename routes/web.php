@@ -16,11 +16,12 @@ Route::get('/', function () {
 });
 
 Route::prefix('admin')->name('admin.')->group(function() {
-	Route::get("home", "\App\Http\Controllers\Admin\HomeController@index")->name('home.index');
-
+	
 	Route::get('/login','Auth\AdminLoginController@showLoginForm')->name('login');
 	Route::post('/login','Auth\AdminLoginController@Login')->name('login.submit');
-	//Route::get('/', 'AdminController@index')->name('admin.dashboard');	
+	// Route::get('/', 'AdminController@index')->name('dashboard');	
+	Route::get("/home", "\App\Http\Controllers\Admin\HomeController@index")->name('home.index');
+
 
 	Route::prefix('stock')->name('stock.')->group(function() {
 		Route::get("", "\App\Http\Controllers\Admin\StockController@index")->name('index');
@@ -77,3 +78,7 @@ Auth::routes();
 
 
 
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');

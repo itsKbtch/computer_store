@@ -53,7 +53,7 @@ return [
         ],
         'admin-api' => [
             'driver' => 'token',
-            'provider' => 'admins   ',
+            'provider' => 'admins',
             'hash' => false,
         ],
 

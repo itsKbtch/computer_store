@@ -1,4 +1,12 @@
 @extends('admin.index')
+
+@section('breadcrumb')
+  <ol class="breadcrumb bg-white m-0">
+    <li class="breadcrumb-item" aria-current="page"><a href="{{ route('admin.home.index') }}">Trang chủ</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Mã giảm giá</li>
+  </ol>
+@endsection
+
 @section('content')
         	@if (session('success'))
         	<div class="alert alert-success alert-dismissible fade show mb-0" role="alert">

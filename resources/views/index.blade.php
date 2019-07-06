@@ -15,7 +15,7 @@
 
         <!-- Favicon
 		============================================ -->
-		<link rel="shortcut icon" type="image/x-icon" href="img/logo HK.png">
+		<link rel="shortcut icon" type="image/x-icon" href="{{asset('img/logo-HK-title.png')}}">
 		
 		<!-- Fonts
 		============================================ -->
@@ -108,7 +108,7 @@
 							<div class="header-top-right">
 								<ul class="list-inline">
 									@auth
-										<li><a href="#"><i class="fa fa-user"></i>Tài khoản</a></li>
+										<li><a href="{{ route('account.index') }}"><i class="fa fa-user"></i>Tài khoản</a></li>
 										<li><a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="fa fa-unlock"></i>Đăng xuất</a></li>
 										<form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
 	                                        @csrf
@@ -118,7 +118,6 @@
 									    <li><a href="{{ route('login') }}"><i class="fa fa-lock"></i>Đăng nhập</a></li>
 										<li><a href="{{ route('register') }}"><i class="fa fa-pencil-square-o"></i>Đăng kí</a></li>
 									@endguest
-									<li><a href="checkout.html"><i class="fa fa-check-square-o"></i>Thanh toán</a></li>
 								</ul>
 							</div>
 						</div>
@@ -130,7 +129,7 @@
 					<div class="row">
 						<div class="col-md-2 col-sm-2 col-xs-12">
 							<div class="header-logo">
-								<a href="{{ route('home') }}"><img src="{{asset('img/logo HK.png')}}" width="70%" alt="logo"></a>
+								<a href="{{ route('home') }}"><img src="{{asset('img/logo-HK.png')}}" width="70%" alt="logo"></a>
 							</div>
 						</div>
 						<div class="col-md-10 col-sm-10 col-xs-12">
@@ -142,41 +141,42 @@
 									</form>
 								</div>
 								<div class="header-chart">
-									<ul class="list-inline">
-										<li><a href="#"><i class="fa fa-cart-arrow-down"></i></a></li>
-										<li class="chart-li"><a href="#">Giỏ hàng</a>
+									<ul class="list-inline" style="display: flex">
+										<li><a href="{{ route('cartList') }}"><i class="fa fa-cart-arrow-down"></i></a></li>
+										<li class="chart-li"><a href="{{ route('cartList') }}">Giỏ hàng</a>
 											<ul>
                                                 <li>
+                                                	@php
+                                                		$total = 0;
+                                                	@endphp
                                                     <div class="header-chart-dropdown">
-                                                        <div class="header-chart-dropdown-list">
-                                                            <div class="dropdown-chart-left floatleft">
-                                                                <a href="#"><img src="img/product/best-product-1.png" alt="list"></a>
-                                                            </div>
-                                                            <div class="dropdown-chart-right">
-                                                                <h2><a href="#">Feugiat justo lacinia</a></h2>
-                                                                <h3>Qty: 1</h3>
-                                                                <h4>£80.00</h4>
-                                                            </div>
-                                                        </div>
-                                                        <div class="header-chart-dropdown-list">
-                                                            <div class="dropdown-chart-left floatleft">
-                                                                <a href="#"><img src="img/product/best-product-2.png" alt="list"></a>
-                                                            </div>
-                                                            <div class="dropdown-chart-right">
-                                                                <h2><a href="#">Aenean eu tristique</a></h2>
-                                                                <h3>Qty: 1</h3>
-                                                                <h4>£70.00</h4>
-                                                            </div>
-                                                        </div>
+                                                    	@forelse ($carts as $cart)
+                                                    		<div class="header-chart-dropdown-list">
+	                                                            <div class="dropdown-chart-right">
+	                                                                <h2><a href="{{ route('details', [str_slug($cart['name'])."-".$cart['id']]) }}">{{$cart['name']}}</a></h2>
+	                                                                <h3>Số lượng: {{$cart['quantity']}}</h3>
+	                                                                <h4>Đơn giá: {{number_format($cart['price'])}} VNĐ</h4>
+	                                                            </div>
+	                                                        </div>
+	                                                        @php
+	                                                        	$total = $total + $cart['price']*$cart['quantity'];
+	                                                        @endphp
+                                                    	@empty
+                                                    		<div class="header-chart-dropdown-list">
+	                                                            Chưa có sản phẩm nào
+	                                                        </div>
+                                                    	@endforelse
 														<div class="chart-checkout">
-															<p>Tổng<span>£150.00</span></p>
-															<button type="button" class="btn btn-default">Thanh toán</button>
+															<p>Tổng<span>{{number_format($total)}} VNĐ</span></p>
+															@if (!empty($carts))
+																<button type="button" class="btn btn-default"><a href="{{ route('checkout') }}" width="100%">Đặt hàng</a></button>
+															@endif
 														</div>
                                                     </div> 
                                                 </li> 
                                             </ul> 
 										</li>
-										<li><a href="#">2 items</a></li>
+										<li><a href="{{ route('cartList') }}">{{count($carts)}} sản phẩm</a></li>
 									</ul>
 								</div>
 							</div>
@@ -214,10 +214,10 @@
 								<ul>
 									<li><a href="{{ route('home') }}">Trang chủ</a></li>
 									@forelse ($categories as $category)		
-										<li><a href="{{ route('category', [$category->name]) }}">{{$category->name}}</a>
+										<li><a href="{{ route('category', [str_slug($category->name).'-'.$category->id]) }}">{{$category->name}}</a>
 											<ul class="sub-menu">
 												@foreach ($category->subCategories as $subCategory)
-													<li><a href="{{ route('category', [$category->name, $subCategory->name]) }}">{{$subCategory->name}}</a></li>
+													<li><a href="{{ route('category', [str_slug($category->name).'-'.$category->id, str_slug($subCategory->name).'-'.$subCategory->id]) }}">{{$subCategory->name}}</a></li>
 												@endforeach
 											</ul>
 										</li>

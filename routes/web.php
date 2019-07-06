@@ -11,7 +11,6 @@
 |
 */
 Route::prefix('admin')->name('admin.')->group(function() {
-
   	Route::post('/logout', '\App\Http\Controllers\Auth\AdminLoginController@logout')->name('logout');
 	
 	Route::get('/login','\App\Http\Controllers\Auth\AdminLoginController@showLoginForm')->name('login');
@@ -19,7 +18,7 @@ Route::prefix('admin')->name('admin.')->group(function() {
 	Route::post('/login','\App\Http\Controllers\Auth\AdminLoginController@login')->name('login.submit');
 
 	Route::middleware('auth:admin')->group(function() {
-		Route::get("/home", "\App\Http\Controllers\Admin\HomeController@index")->name('home.index');
+		Route::get("/", "\App\Http\Controllers\Admin\HomeController@index")->name('home.index');
 
 		Route::prefix('stock')->name('stock.')->group(function() {
 			Route::get("", "\App\Http\Controllers\Admin\StockController@index")->name('index');
@@ -82,9 +81,28 @@ Route::prefix('admin')->name('admin.')->group(function() {
 			Route::post("deleteMany", "\App\Http\Controllers\Admin\SlideshowController@destroyMany")->name('deleteMany');
 		});
 
+		Route::prefix('invoice')->name('invoice.')->group(function() {
+			Route::get("", "\App\Http\Controllers\Admin\InvoiceController@index")->name('index');
+			Route::get("{id}/details", "\App\Http\Controllers\Admin\InvoiceController@show")->name('details');
+			Route::post("{id}/changestatus", "\App\Http\Controllers\Admin\InvoiceController@change_status")->name('changeStatus');
+			Route::get("{id}/edit", "\App\Http\Controllers\Admin\InvoiceController@edit")->name('edit');
+			Route::post("{id}/edit", "\App\Http\Controllers\Admin\InvoiceController@update")->name('update');
+			Route::get("create", "\App\Http\Controllers\Admin\InvoiceController@create")->name('create');
+			Route::post("create", "\App\Http\Controllers\Admin\InvoiceController@store")->name('store');
+			Route::delete("{id}/delete", "\App\Http\Controllers\Admin\InvoiceController@destroy")->name('delete');
+			Route::post("deleteMany", "\App\Http\Controllers\Admin\InvoiceController@destroyMany")->name('deleteMany');
+		});
+
 		Route::prefix('users')->name('users.')->group(function() {
 			Route::get("", "\App\Http\Controllers\Admin\UsersController@index")->name('index');
 			Route::get("{id}/details", "\App\Http\Controllers\Admin\UsersController@show")->name('details');
+		});
+
+		Route::prefix('profile')->name('profile.')->group(function() {
+			Route::get("", "\App\Http\Controllers\Admin\AdminController@index")->name('index');
+			Route::post("", "\App\Http\Controllers\Admin\AdminController@update")->name('update');
+			Route::get("password/change", "\App\Http\Controllers\Admin\AdminController@change_password_form")->name('changePasswordForm');
+			Route::post("password/change", "\App\Http\Controllers\Admin\AdminController@change_password")->name('changePassword');
 		});
 	});
 	
@@ -100,9 +118,30 @@ Route::get('/details/{slug}', "\App\Http\Controllers\HomeController@details")->n
 
 Route::get('/search', "\App\Http\Controllers\HomeController@search")->name('search');	
 
+Route::get('/notfound', '\App\Http\Controllers\HomeController@notfound')->name('notfound');
+
 Route::get('/cart/list', '\App\Http\Controllers\CartController@cart_list')->name('cartList');
 
 Route::post('/cart/add', '\App\Http\Controllers\CartController@add_cart')->name('addCart');
+
+Route::post('/cart/remove', '\App\Http\Controllers\CartController@remove_cart')->name('removeCart');
+
+Route::post('/cart/update', '\App\Http\Controllers\CartController@update_cart')->name('updateCart');
+
+Route::post('/cart/applypromo', '\App\Http\Controllers\CartController@apply_promo_code')->name('applyPromoCode');
+
+Route::get('/checkout', '\App\Http\Controllers\CartController@checkout')->name('checkout');
+
+Route::post('/checkout', '\App\Http\Controllers\CartController@placeorder')->name('placeorder');
+
+Route::get('/checkout/success/{id}', '\App\Http\Controllers\CartController@placeorder_success')->name('placeorder.success');
+
+Route::prefix('account')->name('account.')->group(function() {
+	Route::get('/', '\App\Http\Controllers\AccountController@index')->name('index');
+	Route::get('/orders', '\App\Http\Controllers\AccountController@orders')->name('orders');
+	Route::get('/orders/{id}/details', '\App\Http\Controllers\AccountController@order_details')->name('orders.details');
+	Route::get('/password/change', '\App\Http\Controllers\AccountController@change_password_form')->name('changePasswordForm');
+});
 
 Route::get('/{category}/{sub_category?}', "\App\Http\Controllers\HomeController@category")->name('category');
 

@@ -1,6 +1,6 @@
 <?php 
 namespace App\Http\Controllers\Helper;
-//session_start();
+use Session;
 
 /**
  * 
@@ -20,6 +20,8 @@ class Cart
 				'quantity' => $item['quantity'],
 				'id' => $item['id'],
 				'price' => $item['price'],
+				'discount_percent' => $item['discount_percent'],
+                'discount_cash' => $item['discount_cash'],
 				'image' => $item['image']
 			];
 		} else {
@@ -30,41 +32,56 @@ class Cart
 	}
 
 	public function setItemCart($id, $cart) {
-		if (!isset($_SESSION['cart'])) {
-			$_SESSION['cart'] = [];
+		if (!Session::has('cart')) {
+			Session::put('cart', []);
 		}
 
-		$_SESSION['cart'][$id] = $cart;
+		$newCart = Session::get('cart');
+		$newCart[$id] = $cart;
+
+		Session::put('cart', $newCart);
 	}
 
-	// public function getItemCart($id) {
-	// 	if (!isset($_SESSION['cart'])) {
-	// 		$_SESSION['cart'] = [];
-	// 	}
-
-	// 	$_SESSION['cart'][$id] = $cart;
-	// }
-
 	public function getAllCart() {
-		if (isset($_SESSION['cart'])) {
-			return $_SESSION['cart'];
-		}
-		return [];
+		return Session::get('cart', []);
 	}
 
 	public function getCart($id) {
-		if (isset($_SESSION['cart'][$id])) {
-			return $_SESSION['cart'][$id];
-		}
-		return [];
+		return Session::get('cart.'.$id, []);
 	}
 
 	public function countAllCart() {
 		return count($this->getAllCart());
 	}
 
-	public function remove_cart() {
-		
+	public function removeItemCart($id) {
+		$cart = $this->getCart($id);
+
+		if (!empty($cart)) {
+			Session::forget('cart.'.$id);
+			return true;
+		}
+
+		return false;
+	}
+
+	public function updateItemCart($id, $quantity) {
+		$cart = $this->getCart($id);
+
+		if (!empty($cart)) {
+			$cart['quantity'] = $quantity;
+			$this->setItemCart($id, $cart);
+			
+			return true;
+		}
+
+		return false;
+	}
+
+	public function destroyCart() {
+		if (Session::has('cart')) {
+			Session::forget('cart');
+		}
 	}
 }
  ?>

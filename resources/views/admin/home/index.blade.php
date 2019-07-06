@@ -1,4 +1,11 @@
 @extends('admin.index')
+
+@section('breadcrumb')
+  <ol class="breadcrumb bg-white m-0">
+    <li class="breadcrumb-item active" aria-current="page">Trang chủ</li>
+  </ol>
+@endsection
+
 @section('content')
           <div class="main-content-container container-fluid px-4">
 	          <!-- Page Header -->
@@ -336,4 +343,5 @@
               <!-- End Top Referrals Component -->
             </div>
           </div>
+          <script src="{{asset('admin_assets/scripts/app/app-blog-overview.1.1.0.js')}}"></script>
 @endsection

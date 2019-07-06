@@ -1,4 +1,14 @@
 @extends('admin.index')
+
+@section('breadcrumb')
+  <ol class="breadcrumb bg-white m-0">
+    <li class="breadcrumb-item" aria-current="page"><a href="{{ route('admin.home.index') }}">Trang chủ</a></li>
+    <li class="breadcrumb-item" aria-current="page"><a href="{{ route('admin.slideshow.index') }}">Slideshow</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{$slideshow->id}}</li>
+    <li class="breadcrumb-item active" aria-current="page">Chỉnh sửa</li>
+  </ol>
+@endsection
+
 @section('content')
           @if (session('fail'))
           <div class="alert alert-danger alert-dismissible fade show mb-0" role="alert">

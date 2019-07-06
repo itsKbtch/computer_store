@@ -7,7 +7,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>@yield('title')</title>
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
@@ -18,11 +18,11 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-        <title>Login V6</title>
+        {{-- <title>Login V6</title> --}}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 <!--===============================================================================================-->  
-    <link rel="icon" type="image/png" href="{{ asset('login_assets/images/icons/favicon.ico') }}"/>
+    <link rel="icon" type="image/png" href="{{ asset('login_assets/images/logo-HK-title.png') }}"/>
 <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" href="{{ asset('login_assets/vendor/bootstrap/css/bootstrap.min.css') }}">
 <!--===============================================================================================-->
@@ -46,7 +46,7 @@
 </head>
 <body>
     <div id="app">
-        <nav class="navbar navbar-expand-md navbar-light shadow-sm" style="background-color: #5F1E6B">
+        <nav class="navbar navbar-expand-md navbar-dark shadow-sm" style="background-color: #5F1E6B">
             <div class="container" >
                 <a class="navbar-brand" href="{{ url('/') }}">
                     <img src="{{ asset('login_assets/images/logo.png') }}" width="50%">
@@ -64,9 +64,9 @@
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ml-auto">
                         <!-- Authentication Links -->
-                        @guest
-                            @yield('menu')
-                        @endguest
+                        
+                        @yield('menu')
+                        
                     </ul>
                 </div>
             </div>

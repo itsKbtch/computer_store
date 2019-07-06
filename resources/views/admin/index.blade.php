@@ -8,9 +8,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-    <link rel="stylesheet" id="main-stylesheet" data-version="1.1.0" href="{{asset('admin/styles/shards-dashboards.1.1.0.min.css')}}">
-    <link rel="stylesheet" href="{{asset('admin/styles/extras.1.1.0.min.css')}}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" id="main-stylesheet" data-version="1.1.0" href="{{asset('admin_assets/styles/shards-dashboards.1.1.0.min.css')}}">
+    <link rel="stylesheet" href="{{asset('admin_assets/styles/extras.1.1.0.min.css')}}">
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 
@@ -24,7 +24,7 @@
             <nav class="navbar align-items-stretch navbar-light bg-white flex-md-nowrap border-bottom p-0">
               <a class="navbar-brand w-100 mr-0" href="#" style="line-height: 25px;">
                 <div class="d-table m-auto">
-                  <img id="main-logo" class="d-inline-block align-top mr-1" style="max-width: 25px;" src="{{asset('admin/images/shards-dashboards-logo.svg')}}" alt="Shards Dashboard">
+                  <img id="main-logo" class="d-inline-block align-top mr-1" style="max-width: 25px;" src="{{asset('admin_assets/images/shards-dashboards-logo.svg')}}" alt="Shards Dashboard">
                   <span class="d-none d-md-inline ml-1">HK</span>
                 </div>
               </a>
@@ -33,15 +33,9 @@
               </a>
             </nav>
           </div>
-          <form action="#" class="main-sidebar__search w-100 border-right d-sm-flex d-md-none d-lg-none">
-            <div class="input-group input-group-seamless ml-3">
-              <div class="input-group-prepend">
-                <div class="input-group-text">
-                  <i class="fas fa-search"></i>
-                </div>
-              </div>
-              <input class="navbar-search form-control" type="text" placeholder="Search for something..." aria-label="Search"> </div>
-          </form>
+          <div class="main-sidebar__search w-100 border-right d-sm-flex d-md-none d-lg-none">
+            @yield('breadcrumb')
+          </div>
           <div class="nav-wrapper">
             <ul class="nav flex-column">
               <li class="nav-item">
@@ -51,7 +45,7 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="invoices.html">
+                <a class="nav-link{{strpos(Route::currentRouteName(), 'admin.invoice') !== false? ' active':''}}" href="{{route('admin.invoice.index')}}">
                   <i class="material-icons">receipt</i>
                   <span>Đơn hàng</span>
                 </a>
@@ -106,24 +100,20 @@
           <div class="main-navbar sticky-top bg-white">
             <!-- Main Navbar -->
             <nav class="navbar align-items-stretch navbar-light flex-md-nowrap p-0">
-              <form action="#" class="main-navbar__search w-100 d-none d-md-flex d-lg-flex">
-                <div class="input-group input-group-seamless ml-3">
-                  <div class="input-group-prepend">
-                    <div class="input-group-text">
-                      <i class="fas fa-search"></i>
-                    </div>
-                  </div>
-                  <input class="navbar-search form-control" type="text" placeholder="Search for something..." aria-label="Search"> </div>
-              </form>
+              <div class="main-navbar__search w-100 d-none d-md-flex d-lg-flex align-items-center">
+                  @yield('breadcrumb')
+              </div>
               <ul class="navbar-nav border-left flex-row ">
-                <li class="nav-item dropdown">
-                  <a class="nav-link dropdown-toggle text-nowrap px-3" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                    <img class="user-avatar rounded-circle mr-2" src="{{asset('admin/images/avatars/0.jpg')}}" alt="User Avatar">
-                    {{ Auth::user()->name }} <span class="caret"></span>
+                <li class="nav-item dropdown d-flex align-items-center">
+                  <a class="nav-link dropdown-toggle text-nowrap px-3" data-toggle="dropdown" data-display="static" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                    {{ Auth::user()->username }} <span class="caret"></span>
                   </a>
-                  <div class="dropdown-menu dropdown-menu-small">
-                    <a class="dropdown-item" href="user-profile-lite.html">
-                      <i class="material-icons">&#xE7FD;</i> Profile
+                  <div class="dropdown-menu dropdown-menu-small dropdown-menu-md-right">
+                    <a class="dropdown-item" href="{{ route('admin.profile.index') }}">
+                      <i class="material-icons">&#xE7FD;</i> Thông tin cá nhân
+                    </a>
+                    <a class="dropdown-item" href="{{ route('admin.profile.changePasswordForm') }}">
+                      <i class="material-icons">lock</i> Đổi mật khẩu
                     </a>
                     <div class="dropdown-divider"></div>
                       <a class="dropdown-item" href="{{ route('admin.logout') }} "
@@ -138,7 +128,7 @@
                 </li>
               </ul>
               <nav class="nav">
-                <a href="#" class="nav-link nav-link-icon toggle-sidebar d-md-inline d-lg-none text-center border-left" data-toggle="collapse" data-target=".header-navbar" aria-expanded="false" aria-controls="header-navbar">
+                <a href="#" class="nav-link nav-link-icon toggle-sidebar d-sm-inline d-md-none text-center border-left" data-toggle="collapse" data-target=".header-navbar" aria-expanded="false" aria-controls="header-navbar">
                   <i class="material-icons">&#xE5D2;</i>
                 </a>
               </nav>
@@ -155,12 +145,11 @@
       </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
     <script src="https://unpkg.com/shards-ui@latest/dist/js/shards.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sharrre/2.0.1/jquery.sharrre.min.js"></script>
-    <script src="{{asset('admin/scripts/extras.1.1.0.min.js')}}"></script>
-    <script src="{{asset('admin/scripts/shards-dashboards.1.1.0.min.js')}}"></script>
-    <script src="{{asset('admin/scripts/app/app-blog-overview.1.1.0.js')}}"></script>
+    <script src="{{asset('admin_assets/scripts/extras.1.1.0.min.js')}}"></script>
+    <script src="{{asset('admin_assets/scripts/shards-dashboards.1.1.0.min.js')}}"></script>
   </body>
 </html>

@@ -124,10 +124,22 @@
 										<div class="single-item-area">
 											<div class="single-item">
 												<div class="product-item-img">
-													<img class="primary-img" src="{{asset('storage/product/'.$product->photos[0]->name)}}" alt="{{$product->name}}" style="object-fit: cover; width: 100%; height: 100%;">
+													<a href="{{ route('details', [str_slug($product->name)."-".$product->id]) }}">
+														@if (!$product->photos->isEmpty())
+															<img class="primary-img" src="{{asset('storage/product/'.$product->photos[0]->name)}}" alt="{{$product->name}}" style="object-fit: cover; width: 100%; height: 100%;">
+														@else
+															<img class="primary-img" src="{{asset('img/product/single-product-1.jpg')}}" alt="product">
+														@endif
+													</a>
 													<div class="product-item-action">
 														<a href="{{ route('details', [str_slug($product->name)."-".$product->id]) }}"><i class="fa fa-external-link"></i></a>
-														<a href="#"><i class="fa fa-shopping-cart"></i></a>
+														<a>
+															<form action="{{ route('addCart') }}" method="POST" style="display: inline">
+																@csrf
+																<input type="hidden" name='id' value={{$product->id}}>
+																<button type="submit" style="border: none; background: transparent;"><i class="fa fa-shopping-cart"></i></button>
+															</form>
+														</a>
 													</div>
 												</div>
 												<div class="single-item-content">
@@ -155,7 +167,13 @@
 												</div>
 											</div>
 											<div class="item-action-button fix">
-												<a href="#" style="width: 100%">Thêm vào giỏ hàng</a>
+												<a style="width: 100%">
+													<form action="{{ route('addCart') }}" method="POST" style="display: inline">
+														@csrf
+														<input type="hidden" name='id' value={{$product->id}}>
+														<button type="submit" style="border: none; background: transparent;">Thêm vào giỏ hàng</button>
+													</form>
+												</a>
 											</div>
 										</div>
 									</div>

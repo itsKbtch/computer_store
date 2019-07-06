@@ -56,9 +56,11 @@ class UsersController extends Controller
      * @param  \App\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function show(User $user)
+    public function show(User $user, $id)
     {
-        //
+        $user = $user->with('invoices')->findOrFail($id);
+
+        return view('admin.users.details', ['user' => $user]);
     }
 
     /**

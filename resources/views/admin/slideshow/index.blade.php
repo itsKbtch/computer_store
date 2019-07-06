@@ -1,4 +1,12 @@
 @extends('admin.index')
+
+@section('breadcrumb')
+  <ol class="breadcrumb bg-white m-0">
+    <li class="breadcrumb-item" aria-current="page"><a href="{{ route('admin.home.index') }}">Trang chủ</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Slideshow</li>
+  </ol>
+@endsection
+
 @section('content')
         	@if (session('success'))
         	<div class="alert alert-success alert-dismissible fade show mb-0" role="alert">
@@ -41,7 +49,7 @@
                     <h6 class="m-0">Slides</h6>
                   </div>
                   <div class="card-body p-0 pb-2">
-                    <table class="table table-responsive-lg mb-0 table-hover">
+                    <table class="table table-responsive mb-0 table-hover">
                       <thead class="bg-secondary text-white">
                         <tr>
                           <th scope="col" class="border-0 align-middle"><i class="material-icons">check_box</i></th>

@@ -10,37 +10,21 @@ use App\Slideshow;
 class HomeController extends Controller
 {
     /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('auth', ['only' => 'myAccount']);
-    }
-
-    /**
      * Show the application dashboard.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function index()
     {
-        $categories = Category::with(['subCategories', 'products' => function($query) {
-            $query->with('photos')->where('active', 1)->limit(15);
-        }])->whereNull('parent_id')->where('active', 1)->get();
-
-        $slideshow = Slideshow::all();
-
         $promoProducts = Product::whereNotNull('discount_end_time')->orHas('promotion')->get();
 
-        return view('home.index', ['categories' => $categories, 'promoProducts' => $promoProducts, 'slideshow' => $slideshow]);
+        return view('home.index', [
+            'promoProducts' => $promoProducts
+        ]);
     }
 
     public function details(Product $product, $slug) {
-        $categories = Category::with(['subCategories'])->whereNull('parent_id')->where('active', 1)->get();
-
-        $slideshow = Slideshow::all();
+        // $slideshow = Slideshow::all();
 
         $slug = explode('-', $slug);
 
@@ -66,14 +50,13 @@ class HomeController extends Controller
 
         $related = $related->distinct()->where('active', 1)->where('id', '!=', $id)->limit(15)->get();
 
-        return view('home.details', ['categories' => $categories, 'product' => $product, 'relates' => $related, 'slideshow' => $slideshow]);
+        return view('home.details', [
+            'product' => $product, 
+            'relates' => $related
+        ]);
     }
 
     public function category($category, $sub_category = NULL) {
-        $categories = Category::with(['subCategories'])->whereNull('parent_id')->where('active', 1)->get();
-
-        $slideshow = Slideshow::all();
-
         $category = explode('-', $category);
 
         $category = end($category);
@@ -140,24 +123,22 @@ class HomeController extends Controller
 
         $products = $products->paginate(15)->appends($_GET);
 
-        $mainCategory = $categories->find($category);
+        $mainCategory = Category::find($category);
+
+        if (empty($mainCategory)) {
+            return redirect()->route('notfound');
+        }
 
         $subCategory = $mainCategory->subCategories->find($sub_category);
 
-        return view('home.category', [
-            'categories' => $categories, 
+        return view('home.category', [ 
             'products' => $products, 
             'mainCategory' => $mainCategory, 
-            'subCategory' => $subCategory, 
-            'slideshow' => $slideshow
+            'subCategory' => $subCategory
         ]);
     }
 
     public function search() {
-        $categories = Category::with(['subCategories'])->whereNull('parent_id')->where('active', 1)->get();
-
-        $slideshow = Slideshow::all();
-
         $products = new Product;
 
         if (isset($_GET['category'])) {
@@ -215,9 +196,11 @@ class HomeController extends Controller
         $products = $products->where('active', 1)->paginate(15)->appends($_GET);
 
         return view('home.search', [
-            'categories' => $categories, 
-            'products' => $products, 
-            'slideshow' => $slideshow
+            'products' => $products
         ]);
+    }
+
+    public function notfound() {
+        return view('notfound');
     }
 }

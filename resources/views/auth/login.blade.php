@@ -1,12 +1,18 @@
 @extends('layouts.app')
 
+@section('title')
+    Đăng nhập | HK
+@endsection
+
 @section('menu')
-    <li class="nav-item">
-        <a class="nav-link" style="color: #ffffff" href="{{ route('login') }}">{{ __('Đăng nhập') }}</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" style="color: #ffffff" href="{{ route('register') }}">{{ __('Đăng kí') }}</a>
-    </li>
+    @guest
+        <li class="nav-item">
+            <a class="nav-link" style="color: #ffffff" href="{{ route('login') }}">{{ __('Đăng nhập') }}</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" style="color: #ffffff" href="{{ route('register') }}">{{ __('Đăng kí') }}</a>
+        </li>
+    @endguest
 @endsection
 
 @section('content')

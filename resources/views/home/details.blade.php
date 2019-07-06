@@ -117,10 +117,10 @@
 										</ul>
 									</div>
 									@endif
-									<form action="{{ route('addCart') }}" method="POST" style="margin-top: 20px">
+									<form action="{{ route('addCart') }}" method="POST" style="margin: 20px 0">
 										@csrf
 										<input type="hidden" name='id' value={{$product->id}}>
-										<button type="submit" class="btn btn-warning">Thêm vào giỏ hang</button>
+										<button type="submit" class="btn btn-warning">Thêm vào giỏ hàng</button>
 									</form>
 								</div>
 							</div>
@@ -163,16 +163,22 @@
 												<div class="col-md-4">
 													<div class="single-product">
 														<div class="single-product-img">
-															<a href="#">
+															<a href="{{ route('details', [str_slug($relate->name)."-".$relate->id]) }}">
 																@if (!$relate->photos->isEmpty())
 																	<img class="primary-img" src="{{asset('storage/product/'.$relate->photos[0]->name)}}" alt="{{$relate->name}}">
 																@else
-																	<img class="primary-img" src="img/product/single-product-1.jpg" alt="product">
+																	<img class="primary-img" src="{{asset('img/product/single-product-1.jpg')}}" alt="product">
 																@endif
 															</a>
 															<div class="single-product-action">
 																<a href="{{ route('details', [str_slug($relate->name)."-".$relate->id]) }}"><i class="fa fa-external-link"></i></a>
-																<a href="#"><i class="fa fa-shopping-cart"></i></a>
+																<a>
+																	<form action="{{ route('addCart') }}" method="POST" style="display: inline">
+																		@csrf
+																		<input type="hidden" name='id' value={{$relate->id}}>
+																		<button type="submit" style="border: none; background: transparent;"><i class="fa fa-shopping-cart"></i></button>
+																	</form>
+																</a>
 															</div>
 														</div>
 														<div class="single-product-content">

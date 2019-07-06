@@ -138,12 +138,16 @@
 														@if (!$product->photos->isEmpty())
 															<img class="primary-img" src="{{asset('storage/product/'.$product->photos[0]->name)}}" alt="{{$product->name}}">
 														@else
-															<img class="primary-img" src="img/product/single-product-1.jpg" alt="product">
+															<img class="primary-img" src="{{asset('img/product/single-product-1.jpg')}}" alt="product">
 														@endif
 													</a>
 													<div class="single-product-action">
 														<a href="{{ route('details', [str_slug($product->name)."-".$product->id]) }}"><i class="fa fa-external-link"></i></a>
-														<a href="#"><i class="fa fa-shopping-cart"></i></a>
+														<form action="{{ route('addCart') }}" method="POST" style="display: inline">
+															@csrf
+															<input type="hidden" name='id' value={{$product->id}}>
+															<a><button type="submit" style="border: none; background: transparent;"><i class="fa fa-shopping-cart"></i></button></a>
+														</form>
 													</div>
 												</div>
 												<div class="single-product-content">
@@ -191,12 +195,16 @@
 														@if (!$product->photos->isEmpty())
 															<img class="primary-img" src="{{asset('storage/product/'.$product->photos[0]->name)}}" alt="{{$product->name}}">
 														@else
-															<img class="primary-img" src="img/product/single-product-1.jpg" alt="product">
+															<img class="primary-img" src="{{asset('img/product/single-product-1.jpg')}}" alt="product">
 														@endif
 													</a>
 													<div class="single-product-action">
 														<a href="{{ route('details', [str_slug($product->name)."-".$product->id]) }}"><i class="fa fa-external-link"></i></a>
-														<a href="#"><i class="fa fa-shopping-cart"></i></a>
+														<form action="{{ route('addCart') }}" method="POST" style="display: inline">
+															@csrf
+															<input type="hidden" name='id' value={{$product->id}}>
+															<a><button type="submit" style="border: none; background: transparent;"><i class="fa fa-shopping-cart"></i></button></a>
+														</form>
 													</div>
 												</div>
 												<div class="single-product-content">

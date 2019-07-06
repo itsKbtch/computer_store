@@ -11,7 +11,11 @@ class AdminLoginController extends Controller
 {
 	use AuthenticatesUsers;
 
-	protected $redirectTo = '/admin/home';
+	protected $redirectTo = '/admin';
+
+	protected function authenticated() {
+        return redirect()->route('admin.home.index');
+    }
 
 	public function __construct() {
 		$this->middleware('guest:admin')->except('logout');
@@ -35,6 +39,11 @@ class AdminLoginController extends Controller
 	// 	//if unsuccessful, then redirect back to the login with the form data
 	// 	return redirect()->back()->withInput($request->only('email', 'remember'));
 	// }
+
+	public function username()
+    {
+        return 'username';
+    }
 
 	public function logout() {
         Auth::guard('admin')->logout();

@@ -138,9 +138,16 @@ Route::get('/checkout/success/{id}', '\App\Http\Controllers\CartController@place
 
 Route::prefix('account')->name('account.')->group(function() {
 	Route::get('/', '\App\Http\Controllers\AccountController@index')->name('index');
+	Route::get('/delete/confirm', '\App\Http\Controllers\AccountController@confirm_delete_account')->name('index.deleteConfirm');
+	Route::post('/delete', '\App\Http\Controllers\AccountController@delete_account')->name('delete');
+	Route::post('/', '\App\Http\Controllers\AccountController@update_info')->name('infoUpdate');
+
 	Route::get('/orders', '\App\Http\Controllers\AccountController@orders')->name('orders');
 	Route::get('/orders/{id}/details', '\App\Http\Controllers\AccountController@order_details')->name('orders.details');
+	Route::post('/orders/{id}/cancel', '\App\Http\Controllers\AccountController@cancel_order')->name('orders.cancel');
+
 	Route::get('/password/change', '\App\Http\Controllers\AccountController@change_password_form')->name('changePasswordForm');
+	Route::post('/password/change', '\App\Http\Controllers\AccountController@change_password')->name('changePassword');
 });
 
 Route::get('/{category}/{sub_category?}', "\App\Http\Controllers\HomeController@category")->name('category');

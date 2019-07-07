@@ -90,13 +90,13 @@
 									<div class="product-item-code">
 										<p>Tình trạng: 
 											@if ($product->status == 1)
-					                        	<span class="badge badge-pill badge-primary">Còn hàng</span>
+					                        	<span class="badge badge-pill badge-primary" style="background: #337ab7">Còn hàng</span>
 					                      	@endif
 					                      	@if ($product->status == 2)
-					                        	<span class="badge badge-pill badge-primary">Hết hàng</span>
+					                        	<span class="badge badge-pill badge-primary" style="background: #d9534f">Hết hàng</span>
 					                      	@endif
 					                      	@if ($product->status == 3)
-					                        	<span class="badge badge-pill badge-primary">Sắp về</span>
+					                        	<span class="badge badge-pill badge-primary" style="background: #f0ad4e">Sắp về</span>
 					                      	@endif
 					                  	</p>
 									</div>
@@ -117,11 +117,32 @@
 										</ul>
 									</div>
 									@endif
-									<form action="{{ route('addCart') }}" method="POST" style="margin: 20px 0">
-										@csrf
-										<input type="hidden" name='id' value={{$product->id}}>
-										<button type="submit" class="btn btn-warning">Thêm vào giỏ hàng</button>
-									</form>
+									@switch($product->status)
+									    @case(1)
+									        <form action="{{ route('addCart') }}" method="POST" style="margin: 20px 0">
+												@csrf
+												<input type="hidden" name='id' value={{$product->id}}>
+												<button type="submit" class="btn btn-warning">Thêm vào giỏ hàng</button>
+											</form>
+									        @break
+
+									    @case(2)
+									        
+									        @break
+
+									    @case(3)
+									        <form action="{{ route('addCart') }}" method="POST" style="margin: 20px 0">
+												@csrf
+												<input type="hidden" name='id' value={{$product->id}}>
+												<button type="submit" class="btn btn-warning">Đặt hàng ngay</button>
+											</form>
+									        @break
+									
+									    @default
+									            Default case...
+									@endswitch
+									
+									
 								</div>
 							</div>
 						</div>

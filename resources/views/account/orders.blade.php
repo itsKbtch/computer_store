@@ -1,7 +1,27 @@
 @extends('account.index')
 
 @section('main')
-	<div class="card">
+    @if (session('success'))
+        <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+          <i class="fa fa-info mx-2"></i>
+          {{session('success')}}
+        </div>
+    @endif
+
+    @if (session('fail'))
+      <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+        <i class="fa fa-info mx-2"></i>
+        {{session('fail')}}
+      </div>    
+    @endif
+    
+	  <div class="card">
         <div class="card-header">Đơn hàng</div>
 
         <div class="card-body p-0">
@@ -50,7 +70,10 @@
                       <div class="button-group">
                           <a class="btn btn-info btn-sm" href="{{ route('account.orders.details', [$invoice->id]) }}" title="Chi tiết">Chi tiết</a>
                           @if ($invoice->status == 0)
-                            <a class="btn btn-danger btn-sm" href="#" title="Hủy">Hủy</a>
+                            <button class="btn btn-danger btn-sm" title="Hủy" onclick="if (confirm('Bạn có chắc muốn hủy đơn hàng này?')) {document.getElementById('cancelOrder').submit();}">Hủy</button>
+                            <form action="{{ route('account.orders.cancel', [$invoice->id]) }}" method="post" id="cancelOrder" style="display: none">
+                              @csrf
+                            </form>
                           @endif
                       </div>
                     </td>

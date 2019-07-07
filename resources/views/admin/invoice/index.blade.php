@@ -100,6 +100,9 @@
                     <div class="custom-control custom-checkbox mb-1">
                       <input type="checkbox" class="custom-control-input filter" name="filters%5B%5D" value="waiting" id="waiting" {{(isset($_GET['filters']) && in_array('waiting', $_GET['filters']))? 'checked':''}}><label class="custom-control-label" for="waiting">Đang chờ</label>
                     </div>
+                    <div class="custom-control custom-checkbox mb-1">
+                      <input type="checkbox" class="custom-control-input filter" name="filters%5B%5D" value="confirmed" id="confirmed" {{(isset($_GET['filters']) && in_array('confirmed', $_GET['filters']))? 'checked':''}}><label class="custom-control-label" for="confirmed">Xác nhận</label>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -142,7 +145,7 @@
                           <td class="align-middle">
                             <form class="statusChange" action="{{ route('admin.invoice.changeStatus', [$invoice->id]) }}" method="post">
                               @csrf
-                              <select class="status form-control{{$invoice->status == 1? " text-success":($invoice->status == 2? " text-black-50":($invoice->status == 3? " text-warning":" text-primary"))}}" name="status" style="width: 120px" onchange="if (confirm('Bạn có chắc muốn thay đổi?')) {$(this).parent('.statusChange').submit();} else {$(this).children('.selected').prop('selected', true)}">
+                              <select class="status form-control{{$invoice->status == 1? " text-success":($invoice->status == 2? " text-black-50":($invoice->status == 3? " text-warning":" text-primary"))}}" name="status" style="width: 120px" onchange="if (confirm('Bạn có chắc muốn thay đổi?')) {$(this).parent('.statusChange').submit();} else {$(this).children('.selected').prop('selected', true)}"{{$invoice->status == 1? " disabled":""}}>
                                 <option class="text-primary{{$invoice->status == 0? " selected":""}}" value=0{{$invoice->status == 0? " selected":""}}>Đang chờ</option>
                                 <option class="text-warning{{$invoice->status == 3? " selected":""}}" value=3{{$invoice->status == 3? " selected":""}}>Xác nhận</option>
                                 <option class="text-success{{$invoice->status == 1? " selected":""}}" value=1{{$invoice->status == 1? " selected":""}}>Thành công</option>

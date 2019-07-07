@@ -16,21 +16,24 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $promoProducts = Product::whereNotNull('discount_end_time')->orHas('promotion')->get();
+        $promoProducts = Product::whereNotNull('discount_end_time')->orHas('promotion')->where('active', 1)->get();
+
+        $bestSellers = new Product;
+
+        $bestSellers = $bestSellers->withSales()->with('photos')->orderBy('sales', 'desc')->limit(5)->get();
 
         return view('home.index', [
-            'promoProducts' => $promoProducts
+            'promoProducts' => $promoProducts,
+            'bestSellers' => $bestSellers
         ]);
     }
 
     public function details(Product $product, $slug) {
-        // $slideshow = Slideshow::all();
-
         $slug = explode('-', $slug);
 
         $id = end($slug);
 
-        $product = $product->with(['photos', 'promotion', 'details', 'categories'])->findOrFail($id);
+        $product = $product->with(['photos', 'promotion', 'details', 'categories'])->where('active', 1)->findOrFail($id);
 
         $relates = $product->categories->map(function ($item, $key) {
             return $item->id;

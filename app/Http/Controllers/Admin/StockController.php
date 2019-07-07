@@ -20,7 +20,7 @@ class StockController extends Controller
      */
     public function index()
     {
-        $products = Product::with(['categories', 'promotion']);
+        $products = Product::with(['categories', 'promotion'])->withCount('invoices');
 
         $categories = category::all();
         $mainCategories = $categories->where('parent_id', NULL);
@@ -180,7 +180,7 @@ class StockController extends Controller
     {
         $product = $product->with(['categories', 'promotion' => function($query) {
             $query->where('active', 1);
-        }])->findOrFail($id);
+        }])->withCount('invoices')->findOrFail($id);
 
         return view('admin.stock.details', ['product' => $product]);
     }
@@ -317,7 +317,13 @@ class StockController extends Controller
      */
     public function destroy(Product $product, $id)
     {
-        $product = $product->find($id);
+        $product = $product->withCount('invoices')->find($id);
+
+        if ($product->invoices_count != 0) {
+            return response()->json([
+                'status' => 'fail'
+            ]);
+        }
 
         $product->categories()->detach();
 
@@ -345,9 +351,19 @@ class StockController extends Controller
 
     public function destroyMany(Product $products, Request $request)
     {
-        $products = $products->whereIn('id', $request->id);
+        $productsQuery = $products->withCount('invoices')->whereIn('id', $request->id);
 
-        foreach ($products->get() as $product) {
+        $products = $productsQuery->get();
+
+        foreach ($products as $product) {
+            if ($product->invoices_count != 0) {
+                return response()->json([
+                    'status' => 'error'
+                ]);
+            }
+        }
+
+        foreach ($products as $product) {
             $product->categories()->detach();
 
             $product->promotion()->detach();
@@ -360,7 +376,7 @@ class StockController extends Controller
             $product->photos()->delete();
         }
 
-        $check = $products->delete();
+        $check = $productsQuery->delete();
 
         if ($check) {
             return response()->json([

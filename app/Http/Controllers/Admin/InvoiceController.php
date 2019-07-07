@@ -28,6 +28,9 @@ class InvoiceController extends Controller
                 if ($filter == 'waiting') {
                     $invoices = $invoices->where('status', 0);
                 }
+                if ($filter == 'confirmed') {
+                    $invoices = $invoices->where('status', 3);
+                }
             }
         }
 
@@ -122,17 +125,33 @@ class InvoiceController extends Controller
             'status' => 'required|integer|in:0,1,2,3'
         ]);
 
-        $invoice = $invoice->findOrFail($id);
+        $invoice = $invoice->with('items')->findOrFail($id);
 
-        $invoice->status = $request->status;
+        if ($invoice->status != 1) {
+            $invoice->status = $request->status;
 
-        $check = $invoice->save();
+            if ($invoice->status == 1) {
+                foreach ($invoice->items as $item) {
+                    $item->in_stock = $item->in_stock - $item->pivot->quantity;
 
-        if ($check) {
-            return back()->with('success', 'Sửa status thành công');
-        } 
+                    if ($item->in_stock < 0) {
+                        return back()->with('fail', 'Sửa status thất bại. Không đủ sản phẩm trong kho hàng.');
+                    }
 
-        return back()->with('fail', 'Sửa status thất bại');
+                    $item->save();
+                }
+            }
+
+            $check = $invoice->save();
+
+            if ($check) {
+                return back()->with('success', 'Sửa status thành công');
+            } 
+
+            return back()->with('fail', 'Sửa status thất bại');
+        }
+
+        return back()->with('fail', 'Không thể thay đổi status của đơn hàng đã thành công');
     }
 
     /**

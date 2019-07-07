@@ -111,8 +111,8 @@ class AdminController extends Controller
         $admin = $admin->findOrFail(Auth::id());
 
         $request->validate([
-            'new_password' => 'required|alpha_num|max:50',
-            'confirm_new_password' => 'required|alpha_num|same:new_password|max:50',
+            'new_password' => 'required|alpha_num|min:8|max:50',
+            'confirm_new_password' => 'required|alpha_num|same:new_password|min:8|max:50',
             'current_password' => 'required|alpha_num|max:50'
         ]);
 

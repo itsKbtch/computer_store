@@ -47,71 +47,49 @@
 					<div class="col-md-3 col-sm-4">
 						<div class="product-catagori-area">
 							<div class="best-seller-area">
-								<h2 class="header-title">Best seller</h2>
-								<div class="best-sell-product">
-									<div class="best-product-img">
-										<a href="#"><img src="img/product/best-product-1.png" alt="product"></a>
-									</div>
-									<div class="best-product-content">
-										<h2><a href="#">Et harum quidem red T-shirt</a></h2>
-										<h3>$45.00</h3>
-										<div class="best-product-rating">
-											<a href="#"><i class="fa fa-star"></i></a>
-											<a href="#"><i class="fa fa-star"></i></a>
-											<a href="#"><i class="fa fa-star"></i></a>
-											<a href="#"><i class="fa fa-star"></i></a>
-											<a href="#"><i class="fa fa-star-o"></i></a>
+								<h2 class="header-title">Sản phẩm bán chạy</h2>
+								@forelse ($bestSellers as $bestSeller)
+									<div class="best-sell-product">
+										<div class="best-product-img" style="width: 100%; padding: 0;">
+											<a href="{{ route('details', [str_slug($bestSeller->name)."-".$bestSeller->id]) }}">
+												@if (!$bestSeller->photos->isEmpty())
+													<img class="primary-img" src="{{asset('storage/product/'.$bestSeller->photos[0]->name)}}" alt="{{$bestSeller->name}}">
+												@else
+													<img src="{{asset('img/product/best-product-2.png')}}" alt="product">
+												@endif
+											</a>
+										</div>
+										<div class="best-product-content">
+											<h2><a href="{{ route('details', [str_slug($bestSeller->name)."-".$bestSeller->id]) }}">{{$bestSeller->name}}</a></h2>
+											<h3 style="{{!empty($bestSeller->discount_end_time)? 'text-decoration: line-through':''}}">{{number_format($bestSeller->price)}} VNĐ</h3>
+
+											@if (!empty($bestSeller->discount_percent))
+						                       <h3>
+						                       	{{number_format($bestSeller->price - $bestSeller->price*$bestSeller->discount_percent/100)}} VNĐ 
+						                       	<span class="badge badge-pill badge-warning text-uppercase">giảm {{$bestSeller->discount_percent}}%</span>
+						                       </h3>
+						                    @endif
+						                    @if (!empty($bestSeller->discount_cash))
+						                       <h3>
+						                       	{{number_format($bestSeller->price - $bestSeller->discount_cash)}} VNĐ 
+						                       	<span class="badge badge-pill badge-warning text-uppercase">giảm {{number_format($bestSeller->discount_cash)}}</span>
+						                       </h3>
+						                    @endif
+
+											<div class="best-product-rating">
+												<a href="#"><i class="fa fa-star"></i></a>
+												<a href="#"><i class="fa fa-star"></i></a>
+												<a href="#"><i class="fa fa-star"></i></a>
+												<a href="#"><i class="fa fa-star"></i></a>
+												<a href="#"><i class="fa fa-star-o"></i></a>
+											</div>
 										</div>
 									</div>
-								</div>
-								<div class="best-sell-product">
-									<div class="best-product-img">
-										<a href="#"><img src="img/product/best-product-2.png" alt="product"></a>
+								@empty
+									<div class="best-sell-product">
+										Chưa có sản phẩm nào
 									</div>
-									<div class="best-product-content">
-										<h2><a href="#">Et harum quidem red T-shirt</a></h2>
-										<h3>$45.00</h3>
-										<div class="best-product-rating">
-											<a href="#"><i class="fa fa-star"></i></a>
-											<a href="#"><i class="fa fa-star"></i></a>
-											<a href="#"><i class="fa fa-star"></i></a>
-											<a href="#"><i class="fa fa-star"></i></a>
-											<a href="#"><i class="fa fa-star-o"></i></a>
-										</div>
-									</div>
-								</div>
-								<div class="best-sell-product">
-									<div class="best-product-img">
-										<a href="#"><img src="img/product/best-product-3.png" alt="product"></a>
-									</div>
-									<div class="best-product-content">
-										<h2><a href="#">Et harum quidem red T-shirt</a></h2>
-										<h3>$45.00</h3>
-										<div class="best-product-rating">
-											<a href="#"><i class="fa fa-star"></i></a>
-											<a href="#"><i class="fa fa-star"></i></a>
-											<a href="#"><i class="fa fa-star"></i></a>
-											<a href="#"><i class="fa fa-star"></i></a>
-											<a href="#"><i class="fa fa-star-o"></i></a>
-										</div>
-									</div>
-								</div>
-								<div class="best-sell-product">
-									<div class="best-product-img">
-										<a href="#"><img src="img/product/best-product-2.png" alt="product"></a>
-									</div>
-									<div class="best-product-content">
-										<h2><a href="#">Et harum quidem red T-shirt</a></h2>
-										<h3>$45.00</h3>
-										<div class="best-product-rating">
-											<a href="#"><i class="fa fa-star"></i></a>
-											<a href="#"><i class="fa fa-star"></i></a>
-											<a href="#"><i class="fa fa-star"></i></a>
-											<a href="#"><i class="fa fa-star"></i></a>
-											<a href="#"><i class="fa fa-star-o"></i></a>
-										</div>
-									</div>
-								</div>
+								@endforelse
 								<p class="view-details">
 									<a></a>
 								</p>
@@ -143,11 +121,6 @@
 													</a>
 													<div class="single-product-action">
 														<a href="{{ route('details', [str_slug($product->name)."-".$product->id]) }}"><i class="fa fa-external-link"></i></a>
-														<form action="{{ route('addCart') }}" method="POST" style="display: inline">
-															@csrf
-															<input type="hidden" name='id' value={{$product->id}}>
-															<a><button type="submit" style="border: none; background: transparent;"><i class="fa fa-shopping-cart"></i></button></a>
-														</form>
 													</div>
 												</div>
 												<div class="single-product-content">
@@ -200,11 +173,6 @@
 													</a>
 													<div class="single-product-action">
 														<a href="{{ route('details', [str_slug($product->name)."-".$product->id]) }}"><i class="fa fa-external-link"></i></a>
-														<form action="{{ route('addCart') }}" method="POST" style="display: inline">
-															@csrf
-															<input type="hidden" name='id' value={{$product->id}}>
-															<a><button type="submit" style="border: none; background: transparent;"><i class="fa fa-shopping-cart"></i></button></a>
-														</form>
 													</div>
 												</div>
 												<div class="single-product-content">

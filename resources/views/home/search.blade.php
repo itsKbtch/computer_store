@@ -137,13 +137,6 @@
 													</a>
 													<div class="product-item-action">
 														<a href="{{ route('details', [str_slug($product->name)."-".$product->id]) }}"><i class="fa fa-external-link"></i></a>
-														<a>
-															<form action="{{ route('addCart') }}" method="POST" style="display: inline">
-																@csrf
-																<input type="hidden" name='id' value={{$product->id}}>
-																<button type="submit" style="border: none; background: transparent;"><i class="fa fa-shopping-cart"></i></button>
-															</form>
-														</a>
 													</div>
 												</div>
 												<div class="single-item-content">
@@ -171,12 +164,8 @@
 												</div>
 											</div>
 											<div class="item-action-button fix">
-												<a style="width: 100%">
-													<form action="{{ route('addCart') }}" method="POST" style="display: inline">
-														@csrf
-														<input type="hidden" name='id' value={{$product->id}}>
-														<button type="submit" style="border: none; background: transparent;">Thêm vào giỏ hàng</button>
-													</form>
+												<a href="{{ route('details', [str_slug($product->name)."-".$product->id]) }}" style="width: 100%">
+													Xem chi tiết
 												</a>
 											</div>
 										</div>

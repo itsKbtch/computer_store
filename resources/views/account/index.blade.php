@@ -21,7 +21,7 @@
 			<div class="col-12">
 				<ul class="nav nav-tabs mb-4">
 				  <li class="nav-item">
-				    <a class="nav-link{{Route::currentRouteName() == 'account.index'? ' font-weight-bold active':''}}" style="{{Route::currentRouteName() == 'account.index'? 'color: rgb(95, 30, 107)':''}}" href="{{ route('account.index') }}">Tài khoản</a>
+				    <a class="nav-link{{strpos(Route::currentRouteName(), 'account.index') !== false? ' font-weight-bold active':''}}" style="{{strpos(Route::currentRouteName(), 'account.index') !== false? 'color: rgb(95, 30, 107)':''}}" href="{{ route('account.index') }}">Tài khoản</a>
 				  </li>
 				  <li class="nav-item">
 				    <a class="nav-link{{strpos(Route::currentRouteName(), 'account.orders') !== false? ' font-weight-bold active':''}}" style="{{strpos(Route::currentRouteName(), 'account.orders') !== false? 'color: rgb(95, 30, 107)':''}}" href="{{ route('account.orders') }}">Đơn hàng</a>

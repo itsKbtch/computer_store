@@ -1,11 +1,31 @@
 @extends('account.index')
 
 @section('main')
+    @if (session('success'))
+        <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+          <i class="fa fa-info mx-2"></i>
+          {{session('success')}}
+        </div>
+    @endif
+
+    @if (session('fail'))
+      <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+        <i class="fa fa-info mx-2"></i>
+        {{session('fail')}}
+      </div>    
+    @endif
+
 	<div class="card mb-4">
         <div class="card-header">Thông tin</div>
 
         <div class="card-body">
-            <form method="POST" action="{{ route('register') }}">
+            <form method="POST" action="{{ route('account.infoUpdate') }}">
                 @csrf
 
                 <div class="form-group row">
@@ -79,7 +99,7 @@
 
         <div class="card-body">
             <ul class="nav">
-                <li class="nav-item"><a href="#">Xóa tài khoản</a></li>
+                <li class="nav-item"><a class="text-danger" href="{{ route('account.index.deleteConfirm') }}" onclick="return confirm('Bạn có chắc muốn xóa tài khoản?')">Xóa tài khoản</a></li>
             </ul>
         </div>
     </div>

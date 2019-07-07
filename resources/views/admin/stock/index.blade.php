@@ -179,7 +179,7 @@
                       <div class=""><span class="font-weight-bold">Ngày thêm: </span>{{$product->created_at}}</div>
                       <div class="btn-group mt-4">
                         <a class="btn btn-info btn-sm" href="{{route('admin.stock.edit', [$product->id])}}" title="Chỉnh sửa"><i class="fas fa-pencil-alt"></i></a>
-                        <button class="btn btn-danger btn-sm" onclick="destroy('{{ route('admin.stock.delete', [$product->id]) }}')" title="Xóa"><i class="fas fa-trash-alt"></i></button>
+                        <button class="btn btn-danger btn-sm" onclick="destroy('{{ route('admin.stock.delete', [$product->id]) }}')" title="{{$product->invoices_count > 0? " Không thể xóa do đã có đơn hàng":" Xóa"}}"{{$product->invoices_count > 0? " disabled":""}}><i class="fas fa-trash-alt"></i></button>
                       </div>
                     </div>
                   </div>    
@@ -262,6 +262,9 @@
                     else {
                       if (result.status == 'fail') {
                         alert("Xóa thất bại");
+                      } 
+                      if (result.status == 'error') {
+                        alert("Không thể xóa do có sản phẩm đã được đặt");
                       } 
                     }
                   },

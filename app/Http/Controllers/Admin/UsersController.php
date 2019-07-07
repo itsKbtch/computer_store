@@ -58,7 +58,9 @@ class UsersController extends Controller
      */
     public function show(User $user, $id)
     {
-        $user = $user->with('invoices')->findOrFail($id);
+        $user = $user->with(['invoices' => function($query) {
+            $query->orderBy('created_at', 'desc');
+        }])->findOrFail($id);
 
         return view('admin.users.details', ['user' => $user]);
     }

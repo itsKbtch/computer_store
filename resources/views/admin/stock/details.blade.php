@@ -159,7 +159,7 @@
                     <div class="form-group col-12 text-center">
                         <div class="btn-group">
                             <a class="btn btn-warning btn-sm" href="{{route('admin.stock.edit', [$product->id])}}"><i class="fas fa-pencil-alt"></i></a>
-                            <button class="btn btn-danger btn-sm" onclick="destroy('{{ route('admin.stock.delete', [$product->id]) }}')" title="Xóa"><i class="fas fa-trash-alt"></i></button>
+                            <button class="btn btn-danger btn-sm" onclick="destroy('{{ route('admin.stock.delete', [$product->id]) }}')" title="{{$product->invoices_count > 0? " Không thể xóa do đã có đơn hàng":" Xóa"}}"{{$product->invoices_count > 0? " disabled":""}}><i class="fas fa-trash-alt"></i></button>
                         </div>
                     </div>
                   </div>

@@ -25,4 +25,21 @@ class Product extends Model
     function promotion() {
     	return $this->belongsToMany('App\Promotion', 'apply_promo', 'product_id', 'promo_id');
     }
+
+    function invoices() {
+        return $this->belongsToMany('App\Invoice', 'invoice_items')->withPivot('quantity', 'discount_cash', 'discount_percent');
+    }
+
+    function withSales() {
+        $sales = $this->join('invoice_items', 'product.id', '=', 'invoice_items.product_id')
+                    ->join('invoice', 'invoice.id', '=', 'invoice_items.invoice_id')
+                    ->selectRaw('product.id, sum(invoice_items.quantity) as sales')
+                    ->where('product.active', 1)
+                    ->where('invoice.status', 1)
+                    ->groupBy('product.id')->orderBy('sales', 'desc');
+
+        return $this->joinSub($sales, 'sales', function($join) {
+            $join->on('product.id', '=', 'sales.id');
+        });
+    }
 }

@@ -1,11 +1,31 @@
 @extends('account.index')
 
 @section('main')
+    @if (session('success'))
+        <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+          <i class="fa fa-info mx-2"></i>
+          {{session('success')}}
+        </div>
+    @endif
+
+    @if (session('fail'))
+      <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+        <i class="fa fa-info mx-2"></i>
+        {{session('fail')}}
+      </div>    
+    @endif
+
 	<div class="card">
         <div class="card-header">Đổi mật khẩu</div>
 
         <div class="card-body">
-            <form method="POST" action="#">
+            <form method="POST" action="{{ route('account.changePassword') }}">
                 @csrf
 
                 <div class="form-group row">

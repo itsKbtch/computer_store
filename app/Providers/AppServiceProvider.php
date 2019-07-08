@@ -52,7 +52,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         view()->composer('home.*', function($view) {
-            $slideshow = Slideshow::all();
+            $slideshow = Slideshow::where('active', 1)->get();
 
             $view->with('slideshow', $slideshow);
         });

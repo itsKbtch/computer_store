@@ -49,7 +49,7 @@
                     <h6 class="m-0">Slides</h6>
                   </div>
                   <div class="card-body p-0 pb-2">
-                    <table class="table table-responsive mb-0 table-hover">
+                    <table class="table table-responsive-lg mb-0 table-hover">
                       <thead class="bg-secondary text-white">
                         <tr>
                           <th scope="col" class="border-0 align-middle"><i class="material-icons">check_box</i></th>

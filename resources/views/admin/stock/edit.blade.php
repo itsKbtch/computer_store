@@ -191,8 +191,9 @@
                       <div class="row">
                         <div class="form-group col-12 mb-1">
                           <label>Danh mục chính:</label>
+                          <span class="font-weight-normal font-italic" style="font-size: 0.9em; margin-left: 5px">Hãy chọn danh mục chính</span>
                         </div>
-                        @foreach ($categories as $category)
+                        @forelse ($categories as $category)
                           @if (empty($category->parent_id))
                             <div class="form-group col-md-6 col-lg-4 col-xl-3">
                               <div class="custom-control custom-checkbox">
@@ -201,19 +202,17 @@
                               </div>
                             </div>
                           @endif
-                        @endforeach
-                        
-                        <div class="form-group col-12">
-                          <small class="font-italic">
-                            Hãy chọn danh mục chính
-                          </small>
-                        </div>
+                        @empty
+                          <div class="form-group col-12">
+                            Không có dữ liệu
+                          </div>
+                        @endforelse
 
                         <div class="row col-12 subCategories">
                           <div class="form-group col-12 mb-1">
                             <label>Danh mục con:</label>
                           </div>
-                          @foreach ($categories as $category)
+                          @forelse ($categories as $category)
                             @if (!empty($category->parent_id))
                               <div class="form-group col-md-6 col-lg-4 col-xl-3">
                                 <div class="custom-control custom-checkbox">
@@ -222,7 +221,11 @@
                                 </div>
                               </div>
                             @endif
-                          @endforeach
+                          @empty
+                            <div class="form-group col-12">
+                              Không có dữ liệu
+                            </div>
+                          @endforelse
                         </div>
                         @error('categories')
                           <div class="form-group col-12">
@@ -242,18 +245,38 @@
                         </div>
                       </div>
 
-                      <strong class="text-muted d-block my-2">Danh mục</strong>
+                      <strong class="text-muted d-block my-2">Promotions</strong>
 
                       <div class="row">
                         <div class="row col-12 subCategories">
-                          @foreach ($promos as $promo)
+                          @forelse ($promos as $promo)
                             <div class="form-group col-12">
                               <div class="custom-control custom-checkbox">
                                 <input type="checkbox" class="form-control custom-control-input subCategory" id="pr{{$promo->id}}" name="promos[]" value={{$promo->id}}{{$product->promotion->contains($promo)? ' checked':''}}>
                                 <label class="custom-control-label" for="pr{{$promo->id}}">{{$promo->name}}</label>
                               </div>
                             </div>
-                          @endforeach
+                          @empty
+                            <div class="form-group col-12">
+                              Không có dữ liệu
+                            </div>
+                          @endforelse
+                        </div>
+                        @error('promos')
+                          <div class="form-group col-12">
+                            <div class="custom-control-input is-invalid"></div>
+                            <div class="invalid-feedback">{{$message}}</div>
+                          </div>
+                        @enderror
+                        @error('promos.*')
+                          <div class="form-group col-12">
+                            <div class="custom-control-input is-invalid"></div>
+                            <div class="invalid-feedback">{{$message}}</div>
+                          </div>
+                        @enderror
+
+                        <div class="form-group col-12 mt-1">
+                          <a class="font-weight-normal font-italic text-black-50" id="addCategory" href="{{route('admin.promo.index')}}" onclick="return confirm('Bạn có chắc muốn chuyển sang trang quản lí không? Dữ liệu bạn đã điền sẽ bị mất.');">Quản lí khuyến mại</a>
                         </div>
                       </div>
 

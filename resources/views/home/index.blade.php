@@ -38,6 +38,12 @@
 				</div>
 			</div>
 		</div>
+		@else
+		<div class="slider-area" style="margin-bottom: 1.5em;">
+			<div class="container">
+			Chưa có slideshow
+			</div>
+		</div>
 		@endif
 		
         <!-- Product AREA -->

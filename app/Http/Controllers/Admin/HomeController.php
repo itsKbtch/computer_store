@@ -34,7 +34,7 @@ class HomeController extends Controller
         $invoiceTotal = 0;
         $invoiceData = [];
 
-        for ($i=7; $i > 0; $i--) {
+        for ($i=6; $i >= 0; $i--) {
             $daily = Invoice::whereDate('created_at', date('Y-m-d', strtotime("-".$i." days")))->count();
             array_push($invoiceData, $daily);
             $invoiceTotal = $invoiceTotal + $daily;
@@ -43,7 +43,7 @@ class HomeController extends Controller
         $userTotal = 0;
         $userData = [];
 
-        for ($i=7; $i > 0; $i--) {
+        for ($i=6; $i >= 0; $i--) {
             $daily = User::whereDate('created_at', date('Y-m-d', strtotime("-".$i." days")))->count();
             array_push($userData, $daily);
             $userTotal = $userTotal + $daily;

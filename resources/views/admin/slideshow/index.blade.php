@@ -49,7 +49,7 @@
                     <h6 class="m-0">Slides</h6>
                   </div>
                   <div class="card-body p-0 pb-2">
-                    <table class="table table-responsive-lg mb-0 table-hover">
+                    <table class="table table-responsive-xl mb-0 table-hover" style="width: 100%">
                       <thead class="bg-secondary text-white">
                         <tr>
                           <th scope="col" class="border-0 align-middle"><i class="material-icons">check_box</i></th>
@@ -71,7 +71,7 @@
                           </td>
                           <td class="align-middle"><img src="{{asset('storage/slide/'.$slide->photo)}}" alt="{{$slide->photo}}" width="300px"></td>
                           <td class="align-middle">{{$slide->caption}}</td>
-                          <td class="align-middle"><a href="{{$slide->link}}">{{$slide->link}}</a></td>
+                          <td class="align-middle" style="max-width: 250px"><a href="{{$slide->link}}">{{$slide->link}}</a></td>
                           <td class="align-middle">{{$slide->created_at}}</td>
                           <td class="align-middle"><span class="text-{{($slide->active)? 'success':'secondary'}}">{{($slide->active)? 'active':'inactive'}}</span></td>
                           <td class="align-middle">

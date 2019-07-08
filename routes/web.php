@@ -20,6 +20,11 @@ Route::prefix('admin')->name('admin.')->group(function() {
 	Route::middleware('auth:admin')->group(function() {
 		Route::get("/", "\App\Http\Controllers\Admin\HomeController@index")->name('home.index');
 
+		Route::prefix('shop')->name('shop.')->group(function() {
+			Route::get("", "\App\Http\Controllers\Admin\ShopController@index")->name('info');
+			Route::post("", "\App\Http\Controllers\Admin\ShopController@update")->name('update');
+		});
+
 		Route::prefix('stock')->name('stock.')->group(function() {
 			Route::get("", "\App\Http\Controllers\Admin\StockController@index")->name('index');
 			Route::get("create", "\App\Http\Controllers\Admin\StockController@create")->name('create');
@@ -114,7 +119,13 @@ Route::get('/login', "\App\Http\Controllers\Auth\LoginController@showLoginForm")
 
 Route::get('/', "\App\Http\Controllers\HomeController@index")->name('home');
 
+Route::get('/contact', "\App\Http\Controllers\HomeController@contact")->name('contact');
+
+Route::get('/about', "\App\Http\Controllers\HomeController@about")->name('about');
+
 Route::get('/details/{slug}', "\App\Http\Controllers\HomeController@details")->name('details');	
+
+Route::post('/rate', "\App\Http\Controllers\HomeController@rate")->name('rate');		
 
 Route::get('/search', "\App\Http\Controllers\HomeController@search")->name('search');	
 

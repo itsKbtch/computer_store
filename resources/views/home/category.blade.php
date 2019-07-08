@@ -138,11 +138,14 @@
 												<div class="single-item-content">
 													<h2><a href="{{ route('details', [str_slug($product->name)."-".$product->id]) }}">{{$product->name}}</a></h2>
 													<div class="best-product-rating">
-														<a href="#"><i class="fa fa-star"></i></a>
-														<a href="#"><i class="fa fa-star"></i></a>
-														<a href="#"><i class="fa fa-star"></i></a>
-														<a href="#"><i class="fa fa-star"></i></a>
-														<a href="#"><i class="fa fa-star"></i></a>
+														@for ($i = 0; $i < 5; $i++)
+															@if ($i < round($product->rate))
+																<a><i class="fa fa-star"></i></a>
+															@else
+																<a><i class="fa fa-star-o"></i></a>	
+															@endif
+														@endfor
+														<span>({{$product->rate_count}} đánh giá)</span>
 													</div>
 													<h3 style="{{!empty($product->discount_end_time)? 'text-decoration: line-through':''}}">{{number_format($product->price)}} VNĐ</h3>
 													@if (!empty($product->discount_percent))

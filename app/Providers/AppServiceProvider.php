@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 use App\Category;
 use App\Slideshow;
+use App\Shop;
 use App\Http\Controllers\Helper\Cart;
 
 class AppServiceProvider extends ServiceProvider
@@ -37,7 +38,7 @@ class AppServiceProvider extends ServiceProvider
             $view->with('categories', $categories);
         });
 
-        view()->composer(['home.category', 'home.details', 'home.search', 'cart.*', 'notfound'], function($view) {
+        view()->composer(['home.category', 'home.details', 'home.search', 'home.contact', 'home.about', 'cart.*', 'notfound'], function($view) {
             $categories = Category::with(['subCategories'])->whereNull('parent_id')->where('active', 1)->get();
 
             $view->with('categories', $categories);
@@ -45,8 +46,9 @@ class AppServiceProvider extends ServiceProvider
 
         view()->composer(['home.*', 'cart.*', 'notfound'], function($view) {
             $carts = Cart::getInstance()->getAllCart();
+            $info = Shop::first();
 
-            $view->with('carts', $carts);
+            $view->with('carts', $carts)->with('info', $info);
         });
 
         view()->composer('home.*', function($view) {

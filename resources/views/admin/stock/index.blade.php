@@ -151,21 +151,28 @@
                   <div class="card card-small card-post card-post--1">
                   <div class="card-post__image p-2 d-flex justify-content-end align-items-start flex-wrap" style="background-image: url('{{!$product->photos->isEmpty()? asset('storage/product/'.$product->photos[0]->name):''}}');">
                       @if ($product->status == 1)
-                        <a href="#" class="badge badge-pill badge-primary text-uppercase mr-1">Còn hàng</a>
+                        <div class="badge badge-pill badge-primary text-uppercase mr-1">Còn hàng</div>
                       @endif
                       @if ($product->status == 2)
-                        <a href="#" class="badge badge-pill badge-danger text-uppercase mr-1">Hết hàng</a>
+                        <div class="badge badge-pill badge-danger text-uppercase mr-1">Hết hàng</div>
                       @endif
                       @if ($product->status == 3)
-                        <a href="#" class="badge badge-pill badge-info text-uppercase mr-1">Sắp về</a>
+                        <div class="badge badge-pill badge-info text-uppercase mr-1">Sắp về</div>
                       @endif
                       
                       @if (!empty($product->discount_percent))
-                        <a href="#" class="badge badge-pill badge-warning text-uppercase mr-1">giảm {{$product->discount_percent}}%</a>
+                        <div class="badge badge-pill badge-warning text-uppercase mr-1">giảm {{$product->discount_percent}}%</div>
                       @endif
                       @if (!empty($product->discount_cash))
-                        <a href="#" class="badge badge-pill badge-warning text-uppercase mr-1">giảm {{number_format($product->discount_cash)}}</a>
+                        <div class="badge badge-pill badge-warning text-uppercase mr-1">giảm {{number_format($product->discount_cash)}}</div>
                       @endif
+
+                      @if ($product->active)
+                        <div class="badge badge-pill badge-success text-uppercase mr-1">active</div>
+                      @else
+                        <div class="badge badge-pill badge-secondary text-uppercase mr-1">inactive</div>
+                      @endif
+
                       <div class="custom-control custom-checkbox">
                           <input type="checkbox" class="custom-control-input multi-choice" name="id[]" value={{$product->id}} id="pd{{$product->id}}"><label class="custom-control-label" for="pd{{$product->id}}"></label>
                       </div>

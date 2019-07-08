@@ -45,6 +45,12 @@
                 </a>
               </li>
               <li class="nav-item">
+                <a class="nav-link{{strpos(Route::currentRouteName(), 'admin.shop') !== false? ' active':''}}" href="{{route('admin.shop.info')}}">
+                  <i class="material-icons">info</i>
+                  <span>Thông tin cửa hàng</span>
+                </a>
+              </li>
+              <li class="nav-item">
                 <a class="nav-link{{strpos(Route::currentRouteName(), 'admin.invoice') !== false? ' active':''}}" href="{{route('admin.invoice.index')}}">
                   <i class="material-icons">receipt</i>
                   <span>Đơn hàng</span>

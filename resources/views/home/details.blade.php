@@ -66,12 +66,8 @@
 									<div class="product-tab-header">
 										<h1>{{$product->name}}</h1>
 										<div class="best-product-rating">
-											<a href="#"><i class="fa fa-star"></i></a>
-											<a href="#"><i class="fa fa-star"></i></a>
-											<a href="#"><i class="fa fa-star"></i></a>
-											<a href="#"><i class="fa fa-star"></i></a>
-											<a href="#"><i class="fa fa-star"></i></a>
-											<p>(3 costomar review)</p>
+											<a style="cursor: pointer" title="Đánh giá sản phẩm này"><span id="myRating" class="rating" data-stars="5" data-default-rating="{{round($product->rate)}}" data-rating="{{round($product->rate)}}"></span></a>
+											<p>({{$product->rate_count}} đánh giá)</p>
 										</div>
 										<h3 style="{{!empty($product->discount_end_time)? 'text-decoration: line-through':''}}">{{number_format($product->price)}} VNĐ</h3>
 										@if (!empty($product->discount_percent))
@@ -241,4 +237,30 @@
 				</div>
 			</div>
 		</div>
+		<script>
+			var r = new SimpleStarRating(document.getElementById('myRating'));
+			document.getElementById('myRating').addEventListener('rate', function (e) {
+		        $.ajax({
+                url: "{{route('rate')}}",
+                type: "post",
+                data: {
+                  "_token" : '{{csrf_token()}}', 
+                  "_method" : "POST",
+                  "id" : "{{$product->id}}",
+                  "rate" : e.detail,
+                },
+                success: function(result) {
+                  if(result.status == "success") {
+                    alert("Chúng tôi đã ghi nhận đánh giá của bạn");
+                  }
+                  else {
+                    alert("Không thể đánh giá vui long thử lại sau");
+                  }
+                },
+                error: function(error) {
+                  console.log(error);
+                }
+              });
+		    });
+		</script>
 @endsection

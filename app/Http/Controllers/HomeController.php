@@ -203,6 +203,39 @@ class HomeController extends Controller
         ]);
     }
 
+    function rate(Request $request, Product $product) {
+        $product = $product->where('active', 1)->find($request->id);
+
+        if (!empty($product)) {
+            if (!empty($request->rate)) {
+                $product->rate = ($product->rate*$product->rate_count + $request->rate)/($product->rate_count + 1);
+                $product->rate_count++;
+                $check = $product->save();
+                if ($check) {
+                    return response()->json([
+                        'status' => 'success'
+                    ]);
+                }
+
+                return response()->json([
+                    'status' => 'fail'
+                ]);
+            }
+        }
+
+        return response()->json([
+            'status' => 'fail'
+        ]);
+    }
+
+    public function contact() {
+        return view('home.contact');
+    }
+
+    public function about() {
+        return view('home.about');
+    }
+
     public function notfound() {
         return view('notfound');
     }

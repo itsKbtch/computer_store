@@ -77,11 +77,14 @@
 						                    @endif
 
 											<div class="best-product-rating">
-												<a href="#"><i class="fa fa-star"></i></a>
-												<a href="#"><i class="fa fa-star"></i></a>
-												<a href="#"><i class="fa fa-star"></i></a>
-												<a href="#"><i class="fa fa-star"></i></a>
-												<a href="#"><i class="fa fa-star-o"></i></a>
+												@for ($i = 0; $i < 5; $i++)
+													@if ($i < round($bestSeller->rate))
+														<a><i class="fa fa-star"></i></a>
+													@else
+														<a><i class="fa fa-star-o"></i></a>	
+													@endif
+												@endfor
+												<span>({{$bestSeller->rate_count}} đánh giá)</span>
 											</div>
 										</div>
 									</div>

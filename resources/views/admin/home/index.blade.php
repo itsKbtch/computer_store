@@ -34,7 +34,7 @@
                           @endif
                         </div>
                         <div class="detail col-6">
-                          <div class="font-weight-normal">{{$bestSeller->name}}</div>
+                          <div class="font-weight-normal"><a href="{{ route('admin.stock.details', [$bestSeller->id]) }}">{{$bestSeller->name}}</a></div>
                           <div class="font-weight-normal"><b>Doanh số: </b> {{$bestSeller->sales}}</div>
                         </div>
                       </div>
